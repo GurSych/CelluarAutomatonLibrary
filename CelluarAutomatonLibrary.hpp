@@ -4,7 +4,7 @@
 
 namespace gtd {
     template <class T, size_t x_max, size_t y_max>
-    class CelluarAutomator {
+    class CelluarAutomaton {
     public:
         class CellRaw {
         public:
@@ -17,7 +17,7 @@ namespace gtd {
         private:
             std::array<T,x_max> raw{};
         };
-        CelluarAutomator() {
+        CelluarAutomaton() {
             if(x_max < 3) throw gst::excp::OutOfRange("x-axis value is too low for creating celluar");
             if(y_max < 3) throw gst::excp::OutOfRange("y-axis value is too low for creating celluar");
         }
@@ -26,7 +26,7 @@ namespace gtd {
             if(indx >= y_max) throw gst::excp::OutOfRange("Value is too big for this celluar");
             return map[indx];
         }
-        ~CelluarAutomator() {}
+        ~CelluarAutomaton() {}
     private:
         std::array<CellRaw,y_max> map{};
     };
