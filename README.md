@@ -42,7 +42,7 @@ indexing starts from zero value
 
 ```cpp
 gtd::CelluarAutomaton<int,3,4> automaton{};
-automaton[1][2] = 7; // automat[raw][column]
+automaton[1][2] = 7; // automaton[raw][column]
 ```
 
 Code upper creates celluar automaton that could be represented like:
