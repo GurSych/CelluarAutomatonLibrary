@@ -16,7 +16,7 @@ Celluar Automaton Library is my C++ library for easily creating various celluar 
 **Creating simple CelluarAutomaton object:**
 
 ```cpp
-gtd::CelluarAutomaton<int,4,7> automate{}; // gtd::CelluarAutomaton<type,raws,columns>
+gtd::CelluarAutomaton<int,4,7> automaton{}; // gtd::CelluarAutomaton<type,raws,columns>
 ```
 
 | Value   | type   | meaning                     |
@@ -41,8 +41,8 @@ Map in CelluarAutomaton has two dimantions so you should use double indexing ope
 indexing starts from zero value
 
 ```cpp
-gtd::CelluarAutomaton<int,3,4> automate{};
-automat[1][2] = 7; // automat[raw][column]
+gtd::CelluarAutomaton<int,3,4> automaton{};
+automaton[1][2] = 7; // automat[raw][column]
 ```
 
 Code upper creates celluar automaton that could be represented like:
