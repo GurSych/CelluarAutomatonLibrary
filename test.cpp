@@ -1,5 +1,5 @@
 #include <iostream>
-#include <CelluarAutomatorLibrary.hpp>
+#include "CelluarAutomatorLibrary.hpp"
 
 int main() {
     gtd::CelluarAutomator<int,3,3> automat{};
