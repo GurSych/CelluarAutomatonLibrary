@@ -38,7 +38,7 @@ int int int int int int int
 
 **Indexing CelluarAutomaton object:**<br>
 Map in CelluarAutomaton has two dimantions so you should use double indexing operator<br>
-indexing starts from zero value
+Indexing starts from zero value
 
 ```cpp
 gtd::CelluarAutomaton<int,3,4> automaton{};
