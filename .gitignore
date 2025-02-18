@@ -1,2 +1,5 @@
+### Test .cpp ###
+*.cpp
+
 ### VS Code ###
 .vscode/
