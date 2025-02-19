@@ -52,6 +52,10 @@ Code upper creates celluar automaton that could be represented like:
 0 0 0 0
 ```
 
+**Setup your CelluarAutomaton:**<br>
+_This section hasn't been done yet =(_ <br>
+_But it will be written very soon!_
+
 **Equating CelluarAutomaton objects:**<br>
 You can using == and != operators to check equality of two CelluarAutomaton objects
 
@@ -69,19 +73,77 @@ std::cout << automaton1 == automaton2 << ' ' << automaton1 != automaton2 << std:
 
 </details>
 
+# Conway's Game of Life in less than 30 lines of code
+Code bellow is a simple exemple of setuping your automaton using this library. It creates 8x14 bool-type automaton with Game of Life rule. Then it adds there a 'glider' structure and after starts a do-while cycle with calling step() and draw(_rule_) methods.
+
+```cpp
+#include <iostream>
+#include <string>
+#include "CelluarAutomatonLibrary.hpp"
+
+bool life_rule(std::pair<bool*,std::array<bool*,8>> p) {
+    unsigned int neighbours_num{};
+    for(bool* n_cell : p.second) {
+        if(n_cell == nullptr) neighbours_num += 0u;
+        else neighbours_num += (*n_cell ? 1u : 0u);
+    }
+    if(*p.first && (neighbours_num < 2u || neighbours_num > 3u)) return false;
+    else if(!*p.first && neighbours_num == 3u) return true;
+    return *p.first;
+}
+std::string draw_rule(bool value) {
+    return (value ? "#" : ".");
+}
+
+int main() {
+    gtd::CelluarAutomaton<bool,8,14> automaton{life_rule};
+    automaton[1][1] = true;
+    automaton[2][3] = true;
+    automaton[3][1] = true; automaton[3][2] = true; automaton[3][3] = true;
+    std::string input{};
+    do {
+        std::cout << automaton.draw(draw_rule) << std::endl;
+        automaton.step();
+        std::cin >> input;
+    } while(input != "quit");
+    return 0;
+}
+```
+
+```
+.............. .............. .............. .............. .............. ..............
+.#............ .............. .............. .............. .............. ..............
+...#.......... .#.#.......... ...#.......... ..#........... ...#.......... ..............
+.###.......... ..##.......... .#.#.......... ...##......... ....#......... ..#.#.........
+.............. ..#........... ..##.......... ..##.......... ..###......... ...##.........
+.............. .............. .............. .............. .............. ...#..........
+.............. .............. .............. .............. .............. ..............
+.............. .............. .............. .............. .............. ..............
+```
+
+
+<details>
+<summary>How does it work?</summary>
+This section hasn't been done yet =(<br>
+But it will be written very soon!
+</details>
+
 # Plans and ideas
 Library will provide you range of celluar automaton classes which you will be able to setup using lambda-function or even using simple template-language<br>
 Added and finished classes:
-- [ ] CelluarAutomaton
+- [x] CelluarAutomaton
 - [ ] CelluarAutomaton1D
 - [ ] CelluarAutomaton3D
 
 Library features:
-- [ ] Automaton setup using lambda-function
+- [x] Automaton setup using lambda-function
 - [ ] Automaton setup using special language
 
 # Versions
-**Current version: 0.0.1**<br>
+**Current version: 1.0.1**<br>
++1.x.x
+  + 1.0.x
+    + 1.0.1 - base functional of CelluarAutomaton is finished, added feature of setuping automaton rule via a function
 + 0.x.x
   + 0.0.x
     + 0.0.1 - added simple CelluarAutomaton class with indexing operator overload
