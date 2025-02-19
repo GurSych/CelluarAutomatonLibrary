@@ -59,6 +59,9 @@ _But it will be written very soon!_
 **Equating CelluarAutomaton objects:**<br>
 You can using == and != operators to check equality of two CelluarAutomaton objects
 
+> [!WARNING]
+> This method won't work if the type you chose doesn't have this operators overloadings
+
 <details>
 <summary>Code example</summary>
 
