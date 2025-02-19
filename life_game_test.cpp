@@ -9,7 +9,7 @@ bool life_rule(std::pair<bool*,std::array<bool*,8>> p) {
         else neighbours_num += (*n_cell ? 1u : 0u);
     }
     if(*p.first && (neighbours_num < 2u || neighbours_num > 3u)) return false;
-    else if(!*p.first && (neighbours_num == 2u || neighbours_num == 3u)) return true;
+    else if(!*p.first && neighbours_num == 3u) return true;
     return *p.first;
 }
 std::string draw_rule(bool value) {
