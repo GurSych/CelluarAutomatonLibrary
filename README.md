@@ -53,7 +53,7 @@ Code upper creates celluar automaton that could be represented like:
 ```
 
 **Equating CelluarAutomaton objects:**<br>
-You can using == and != operators to check equality of two CelluarAutomatons objects
+You can using == and != operators to check equality of two CelluarAutomaton objects
 
 <details>
 <summary>Code example</summary>
