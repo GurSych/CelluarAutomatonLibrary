@@ -13,5 +13,14 @@ namespace gst {
         private:
             std::string message{};
         };
+        class InvalidRule: public std::exception {
+            public:
+            InvalidRule(const char* msg) : message{msg} {}
+                const char* what() const throw() {
+                    return (std::string{"CAL: Current step's rule is invalid! "} + message).c_str();
+                }
+            private:
+                std::string message{};
+            };
     }
 }
