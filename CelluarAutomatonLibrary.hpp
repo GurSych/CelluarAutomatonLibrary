@@ -1,5 +1,8 @@
 #pragma once
 #include "CAL_Exceptions.hpp"
+#include <optional>
+#include <string>
+#include <vector>
 #include <array>
 
 namespace gtd {
@@ -21,13 +24,56 @@ namespace gtd {
             if(x_max < 3) throw gst::excp::OutOfRange("x-axis value is too low for creating celluar");
             if(y_max < 3) throw gst::excp::OutOfRange("y-axis value is too low for creating celluar");
         }
-        CellRaw operator[](size_t indx) {
+        void step() {}
+        void step(void(*r_func)(std::pair<T*,std::array<T*,8>>)) {}
+        void step(std::string str) {}
+        CellRaw& operator[](size_t indx) {
             if(indx < 0) throw gst::excp::OutOfRange("Value is too low for this celluar");
             if(indx >= y_max) throw gst::excp::OutOfRange("Value is too big for this celluar");
             return map[indx];
         }
+        bool operator==(gtd::CelluarAutomaton<T,x_max,y_max>& cell) {
+            for(size_t y{}; y < y_max; ++y) 
+                for(size_t x{}; x < x_max; ++x) 
+                    if(map[y][x] != cell.map[y][x]) return false;
+            return true;
+        }
+        bool operator!=(gtd::CelluarAutomaton<T,x_max,y_max>& cell) {
+            for(size_t y{}; y < y_max; ++y) 
+                for(size_t x{}; x < x_max; ++x) 
+                    if(map[y][x] != cell.map[y][x]) return true;
+            return false;
+        }
+        void change_rule(void(*ptr)(std::pair<T*,std::vector<T*>>)) {
+            rule_func = ptr;
+        }
+        bool endless_map = false;
         ~CelluarAutomaton() {}
     private:
         std::array<CellRaw,y_max> map{};
+        void(*rule_func)() = nullptr;
+        std::pair<T*,std::array<T*,8>> prepare_dots(size_t y, size_t x) {
+            std::array<T*,8> neighbour_cells{};
+            unsigned short int i{};
+            for(long long int ly = -1ll+(long long int)y; ly <= 1ll+y; ++ly) {
+                for(long long int lx = -1ll+(long long int)x; lx <= 1ll+x; ++lx) {
+                    if(ly == y && lx == x) continue;
+                    if(endless_map) {
+                        if(ly < 0) ly = y_max-1;
+                        if(ly == y_max) ly = 0ll;
+                        if(lx < 0) lx = x_max-1;
+                        if(lx == x_max) lx = 0ll;
+                        neighbour_cells[i++] = &(map[ly][lx]);
+                    } else {
+                        if(ly >= 0 && ly < y_max && lx >= 0 && lx < x_max) neighbour_cells[i++] = &(map[ly][lx]);
+                        else neighbour_cells[i++] = nullptr;
+                    }
+                }
+            }
+            return std::make_pair(&(map[y][x]),neighbour_cells);
+        }
     };
+
+    template <class T>
+    void standart_rule(std::pair<T*,std::array<T*,8>>) {}
 }
