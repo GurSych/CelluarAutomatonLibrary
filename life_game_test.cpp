@@ -17,14 +17,14 @@ std::string draw_rule(bool value) {
 }
 
 int main() {
-    gtd::CelluarAutomaton<bool,14,14> automaton{life_rule};
+    gtd::CelluarAutomaton<bool,8,14> automaton{life_rule};
     automaton[1][1] = true;
     automaton[2][3] = true;
     automaton[3][1] = true; automaton[3][2] = true; automaton[3][3] = true;
     std::string input{};
     do {
-        automaton.step();
         std::cout << automaton.draw(draw_rule) << std::endl;
+        automaton.step();
         std::cin >> input;
     } while(input != "quit");
     return 0;

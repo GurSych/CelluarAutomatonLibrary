@@ -26,11 +26,16 @@ namespace gtd {
         private:
             std::array<T,x_max> raw{};
         };
+        CelluarAutomaton() {
+            if(x_max < 3) throw gst::excp::OutOfRange("x-axis value is too low for creating celluar");
+            if(y_max < 3) throw gst::excp::OutOfRange("y-axis value is too low for creating celluar");
+        }
         CelluarAutomaton(T(*r_func)(std::pair<T*,std::array<T*,8>>)) : rule_func{r_func} {
             if(x_max < 3) throw gst::excp::OutOfRange("x-axis value is too low for creating celluar");
             if(y_max < 3) throw gst::excp::OutOfRange("y-axis value is too low for creating celluar");
         }
         void step() {
+            if(rule_func == nullptr) return;
             std::vector<HCell> h_map{};
             for(size_t y{}; y < y_max; ++y) {
                 for(size_t x{}; x < x_max; ++x) {
