@@ -6,7 +6,7 @@
 #include <array>
 
 namespace gtd {
-    template <class T, size_t x_max, size_t y_max>
+    template <class T, size_t y_max, size_t x_max>
     class CelluarAutomaton {
     public:
         class CellRaw {
@@ -55,8 +55,8 @@ namespace gtd {
         std::pair<T*,std::array<T*,8>> prepare_dots(size_t y, size_t x) {
             std::array<T*,8> neighbour_cells{};
             unsigned short int i{};
-            for(long long int ly = -1ll+(long long int)y; ly <= 1ll+y; ++ly) {
-                for(long long int lx = -1ll+(long long int)x; lx <= 1ll+x; ++lx) {
+            for(long long int ly = -1ll+(long long int)y; ly <= 1ll+(long long int)y; ++ly) {
+                for(long long int lx = -1ll+(long long int)x; lx <= 1ll+(long long int)x; ++lx) {
                     if(ly == y && lx == x) continue;
                     if(endless_map) {
                         if(ly < 0) ly = y_max-1;
