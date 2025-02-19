@@ -63,7 +63,7 @@ std::cout << std::boolalpha;
 gtd::CelluarAutomaton<int,4,7> automaton1{};
 gtd::CelluarAutomaton<int,4,7> automaton2{};
 std::cout << automaton1 == automaton2 << ' ' << automaton1 != automaton2 << std::endl; // true false
-automaton[1][2] = 7;
+automaton2[1][2] = 7;
 std::cout << automaton1 == automaton2 << ' ' << automaton1 != automaton2 << std::endl; // false true
 ```
 
