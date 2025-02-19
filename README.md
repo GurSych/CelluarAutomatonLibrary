@@ -52,6 +52,23 @@ Code upper creates celluar automaton that could be represented like:
 0 0 0 0
 ```
 
+**Equating CelluarAutomaton objects:**<br>
+You can using == and != operators to check equality of two CelluarAutomatons objects
+
+<details>
+<summary>Code example</summary>
+
+```cpp
+std::cout << std::boolalpha;
+gtd::CelluarAutomaton<int,4,7> automaton1{};
+gtd::CelluarAutomaton<int,4,7> automaton2{};
+std::cout << automaton1 == automaton2 << ' ' << automaton1 != automaton2 << std::endl; // true false
+automaton[1][2] = 7;
+std::cout << automaton1 == automaton2 << ' ' << automaton1 != automaton2 << std::endl; // false true
+```
+
+</details>
+
 # Plans and ideas
 Library will provide you range of celluar automaton classes which you will be able to setup using lambda-function or even using simple template-language<br>
 Added and finished classes:
