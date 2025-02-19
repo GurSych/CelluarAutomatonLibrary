@@ -16,14 +16,14 @@ Celluar Automaton Library is my C++ library for easily creating various celluar 
 **Creating simple CelluarAutomaton object:**
 
 ```cpp
-gtd::CelluarAutomaton<int,4,7> automaton{}; // gtd::CelluarAutomaton<type,raws,columns>
+gtd::CelluarAutomaton<int,4,7> automaton{}; // gtd::CelluarAutomaton<type,rows,columns>
 ```
 
 | Value   | type   | meaning                     |
 |---------|--------|:----------------------------|
 | type    | type   | type of each cell's value   |
-| raws    | size_t | number of raws              |
-| columns | size_t | number of cells in each raw |
+| rows    | size_t | number of rows              |
+| columns | size_t | number of cells in each row |
 
 Code upper creates celluar automaton that could be represented like:
 ```
@@ -42,7 +42,7 @@ Indexing starts from zero value
 
 ```cpp
 gtd::CelluarAutomaton<int,3,4> automaton{};
-automaton[1][2] = 7; // automaton[raw][column]
+automaton[1][2] = 7; // automaton[row][column]
 ```
 
 Code upper creates celluar automaton that could be represented like:
