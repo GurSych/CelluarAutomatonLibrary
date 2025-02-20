@@ -28,13 +28,12 @@ namespace gtd {
         private:
             std::array<T,x_max> raw{};
         };
-        CelluarAutomaton() {
+        CelluarAutomaton() : y_size{y_max}, x_size{x_max} {
             if(x_max < 3) throw gst::excp::OutOfRange("x-axis value is too low for creating celluar");
             if(y_max < 3) throw gst::excp::OutOfRange("y-axis value is too low for creating celluar");
         }
-        CelluarAutomaton(T(*r_func)(std::pair<T*,std::array<T*,8>>)) : rule_func{r_func} {
-            if(x_max < 3) throw gst::excp::OutOfRange("x-axis value is too low for creating celluar");
-            if(y_max < 3) throw gst::excp::OutOfRange("y-axis value is too low for creating celluar");
+        CelluarAutomaton(T(*r_func)(std::pair<T*,std::array<T*,8>>)) : CelluarAutomaton() {
+            rule_func = r_func;
         }
         void step() {
             if(rule_func == nullptr) return;
@@ -109,6 +108,8 @@ namespace gtd {
         }
         bool endless_map = false;
         bool try_catch_rule = true;
+        const size_t y_size{};
+        const size_t x_size{};
         ~CelluarAutomaton() {}
     private:
         std::array<CellRaw,y_max> map{};
