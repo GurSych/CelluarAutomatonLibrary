@@ -143,7 +143,7 @@ int main() {
     
 > Before reading this please check out ['Setup your CelluarAutomaton'](#setup-your-celluarautomaton) section
 
-`1-2 lines` Connecting all libraries we will use<br>
+`1-2 lines` Connecting libraries<br>
 `4-11 lines` Initializing Game of Life _rule-function_ <br>
 `12-14 lines` Initializing drawing rule-function<br>
 `17 line` Initializing CelluarAutomaton object<br>
