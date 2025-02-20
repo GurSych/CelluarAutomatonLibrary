@@ -4,7 +4,7 @@ Celluar Automaton Library is my C++ library for easily creating various celluar 
 # Using Library
 > Library is in development so this section is updated together with library itself
 
-**Library connection:**
+### Library connection
 
 ```cpp
 #include "CelluarAutomatonLibrary.hpp"
@@ -13,7 +13,7 @@ Celluar Automaton Library is my C++ library for easily creating various celluar 
 > [!NOTE]
 > All library classes are in gtd:: namespace
 
-**Creating simple CelluarAutomaton object:**
+### Creating simple CelluarAutomaton object
 
 ```cpp
 gtd::CelluarAutomaton<int,4,7> automaton{}; // gtd::CelluarAutomaton<type,rows,columns>
@@ -36,7 +36,7 @@ int int int int int int int
 > [!WARNING]
 > Size of each axis must be in range of size_t type and be 3 or larger
 
-**Indexing CelluarAutomaton object:**<br>
+### Indexing CelluarAutomaton object
 Map in CelluarAutomaton has two dimantions so you should use double indexing operator<br>
 Indexing starts from zero value
 
@@ -52,11 +52,27 @@ Code upper creates celluar automaton that could be represented like:
 0 0 0 0
 ```
 
-**Setup your CelluarAutomaton:**<br>
-_This section hasn't been done yet =(_ <br>
-_But it will be written very soon!_
+## Setup your CelluarAutomaton
+Setuping rules is the most important part of any celluar automaton. For doing this you should create special _rule-function_ <br>
+Your _rule-function_ for `CelluarAutomaton<T,_,_>` must return `T` type and take one argument: `std::pair<T*,std::array<T*,8>>` type (std::pair with < T-pointer and std::array with < 8 T-pointers > >) <br>
+_Rule-function_ is called for each cell in your automaton, it must analize input data and then **return** new (or the same) value for the cell
 
-**Equating CelluarAutomaton objects:**<br>
+> [!CAUTION]
+> **Do not change cell's value via pointer!** You should return value via your _rule-function_
+
+The first element of the pair argument is the pointer to the cell we check, the second one is the array of pointers to this cell's neighbour-cells. Indexing of this array is fixed and the same for every cell:
+```
+0 1 2
+3   4
+5 6 7
+```
+
+> [!WARNING]
+> Neighbour-cell's pointer is `nullptr` if the cell we check is a border one and such neighbour doesn't exist
+
+_This section hasn't been complited yet..._
+
+### Equating CelluarAutomaton objects
 You can using == and != operators to check equality of two CelluarAutomaton objects
 
 > [!WARNING]
@@ -127,8 +143,17 @@ int main() {
 
 <details>
 <summary>How does it work?</summary>
-This section hasn't been done yet =(<br>
-But it will be written very soon!
+    
+> Before reading this please check out ['Setup your CelluarAutomaton'](#setup-your-celluarautomaton) section
+
+`1-3 lines` Connecting all libraries we will use<br>
+`5-14 lines` Initializing Game of Life _rule-function_ <br>
+`15-17 lines` Initializing drawing rule-function<br>
+`20 line` Initializing CelluarAutomaton object<br>
+`21-23 lines` Adding a 'glider' structure<br>
+`26 line` Calling draw(_rule_) method<br>
+`27 line` Calling step() method<br><br>
+_This section hasn't been complited yet..._
 </details>
 
 # Plans and ideas
