@@ -153,7 +153,7 @@ int main() {
 `21-23 lines` Adding a 'glider' structure<br>
 `26 line` Calling draw(_rule_) method<br>
 `27 line` Calling step() method<br>
-**What actually happends in our _rule-function_?**<br>
+<br>**What actually happends in our _rule-function_?**<br>
 Firstly I initialise `neighbours_num` variable that will represent number of live-cells near of the cell. Then I start count these neighbours - I use this code
 
 ```cpp
