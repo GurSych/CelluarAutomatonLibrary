@@ -144,7 +144,7 @@ Library features:
 
 # Versions
 **Current version: 1.0.1**<br>
-+1.x.x
++ 1.x.x
   + 1.0.x
     + 1.0.1 - base functional of CelluarAutomaton is finished, added feature of setuping automaton rule via a function
 + 0.x.x

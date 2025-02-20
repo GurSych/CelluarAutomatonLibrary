@@ -5,6 +5,8 @@
 #include <vector>
 #include <array>
 
+#define GTD_CLA_RULE_ARG(T) std::pair<T*,std::array<T*,8>>
+
 namespace gtd {
     template <class T, size_t y_max, size_t x_max>
     class CelluarAutomaton {
