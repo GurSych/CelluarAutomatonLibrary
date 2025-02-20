@@ -60,7 +60,7 @@ _But it will be written very soon!_
 You can using == and != operators to check equality of two CelluarAutomaton objects
 
 > [!WARNING]
-> This method won't work if the type you chose doesn't have this operators overloadings
+> This operators won't work if the type you chose doesn't have this operators overloadings
 
 <details>
 <summary>Code example</summary>
