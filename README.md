@@ -151,7 +151,7 @@ int main() {
 `23 line` Calling draw(_rule_) method<br>
 `24 line` Calling step() method<br>
 <br>**What actually happends in our _rule-function_?**<br>
-Firstly I initialise `neighbours_num` variable that will represent number of live-cells near of the cell. Then I start count these neighbours - I use this code
+Firstly I initialise `neighbours_num` variable that will represent number of live-cells near of the cell. Then I start count these neighbours using this cycle
 
 ```cpp
 for(bool* n_cell : p.second) // check each neighbour-cell
@@ -180,9 +180,10 @@ Library features:
 - [ ] Automaton setup using special language
 
 # Versions
-**Current version: 1.0.1**<br>
+**Current version: 1.0.2**<br>
 + 1.x.x
   + 1.0.x
+    + 1.0.2 - rule-function's argument type macro, y_size/x_size and new constructors logic added
     + 1.0.1 - base functional of CelluarAutomaton is finished, added feature of setuping automaton rule via a function
 + 0.x.x
   + 0.0.x
