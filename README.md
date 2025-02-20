@@ -68,7 +68,7 @@ The first element of the pair argument is the pointer to the cell we check, the 
 ```
 
 > [!WARNING]
-> Neighbour-cell's pointer is `nullptr` if the cell we check is on the border of automaton's map and such neighbour doesn't exist
+> Neighbour-cell's pointer is `nullptr` if the cell we check is on the border of automaton's map and such neighbour doesn't exist<br>You should always check that pointer isn't `nullptr`
 
 _This section hasn't been complited yet..._
 
