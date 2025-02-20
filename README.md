@@ -97,15 +97,12 @@ Code bellow is a simple exemple of setuping your automaton using this library. I
 
 ```cpp
 #include <iostream>
-#include <string>
 #include "CelluarAutomatonLibrary.hpp"
 
 bool life_rule(std::pair<bool*,std::array<bool*,8>> p) {
     unsigned int neighbours_num{};
-    for(bool* n_cell : p.second) {
-        if(n_cell == nullptr) neighbours_num += 0u;
-        else neighbours_num += (*n_cell ? 1u : 0u);
-    }
+    for(bool* n_cell : p.second)
+        if(n_cell != nullptr) neighbours_num += (*n_cell ? 1u : 0u);
     if(*p.first && (neighbours_num < 2u || neighbours_num > 3u)) return false;
     else if(!*p.first && neighbours_num == 3u) return true;
     return *p.first;
@@ -146,24 +143,15 @@ int main() {
     
 > Before reading this please check out ['Setup your CelluarAutomaton'](#setup-your-celluarautomaton) section
 
-`1-3 lines` Connecting all libraries we will use<br>
-`5-14 lines` Initializing Game of Life _rule-function_ <br>
-`15-17 lines` Initializing drawing rule-function<br>
-`20 line` Initializing CelluarAutomaton object<br>
-`21-23 lines` Adding a 'glider' structure<br>
-`26 line` Calling draw(_rule_) method<br>
-`27 line` Calling step() method<br>
+`1-2 lines` Connecting all libraries we will use<br>
+`4-11 lines` Initializing Game of Life _rule-function_ <br>
+`12-14 lines` Initializing drawing rule-function<br>
+`17 line` Initializing CelluarAutomaton object<br>
+`18-20 lines` Adding a 'glider' structure<br>
+`23 line` Calling draw(_rule_) method<br>
+`24 line` Calling step() method<br>
 <br>**What actually happends in our _rule-function_?**<br>
 Firstly I initialise `neighbours_num` variable that will represent number of live-cells near of the cell. Then I start count these neighbours - I use this code
-
-```cpp
-for(bool* n_cell : p.second) {
-    if(n_cell == nullptr) neighbours_num += 0u;
-    else neighbours_num += (*n_cell ? 1u : 0u);
-}
-```
-
-Code upper is outdated, that's better to use this code
 
 ```cpp
 for(bool* n_cell : p.second) // check each neighbour-cell
