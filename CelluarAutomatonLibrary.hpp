@@ -9,7 +9,6 @@
 #include <set>
 
 #define GTD_CA_RULE_ARG(T) std::pair<T*,std::array<T*,8>>
-//#define GTD_CA_RULE_ARG(T,S) std::pair<T*,std::array<T*,S>>
 
 namespace gtd {
     template <class T, size_t y_max, size_t x_max>
@@ -80,28 +79,19 @@ namespace gtd {
         }
         template <size_t Arr_Size>
         void step(T(*r_func)(std::pair<T*,std::array<T*,Arr_Size>>)) {
+            //if(rule_arg_arr_layers(Arr_Size) == 0ull) throw gtd::excp::InvalidRuleFunction("Invalid neighbours number");
             std::vector<HCell> h_map{};
             for(size_t y{}; y < y_max; ++y) {
                 for(size_t x{}; x < x_max; ++x) {
                     T new_value{};
                     if(try_catch_rule) {
                         try {
-                            auto p = prepare_dots(y,x,Arr_Size);
-                            std::array<T*,Arr_Size> n_a{};
-                            unsigned int i{};
-                            for(T* ptr : p.second) n_a[i++] = ptr;
-                            std::pair<T*,std::array<T*,Arr_Size>> n_p{p.first,n_a};
-                            new_value = r_func(n_p);
+                            new_value = r_func(prepare_dots<Arr_Size>(y,x));
                         } catch(const std::exception& e) {
                             //throw gtd::excp::InvalidRule(e.what());
                         }
                     } else {
-                        auto p = prepare_dots(y,x,Arr_Size);
-                        std::array<T*,Arr_Size> n_a{};
-                        unsigned int i{};
-                        for(T* ptr : p.second) n_a[i++] = ptr;
-                        std::pair<T*,std::array<T*,Arr_Size>> n_p{p.first,n_a};
-                        new_value = r_func(n_p);
+                        new_value = r_func(prepare_dots<Arr_Size>(y,x));
                     }
                     if(new_value != map[y][x]) h_map.emplace_back(y,x,new_value);
                 }
@@ -147,6 +137,17 @@ namespace gtd {
         static size_t rule_arg_arr_size(size_t layers) {
             return std::pow((layers*2ull)+1ull,2)-1.;
         }
+        static size_t rule_arg_arr_layers(size_t arr_size) {
+            if(available_arg_sizes_to_layers.count(arr_size) > 0) return available_arg_sizes_to_layers[arr_size];
+            else {
+                size_t checking_layers = std::floor((std::floor(std::sqrt(arr_size+1ull))-1u)/2);
+                if(rule_arg_arr_size(checking_layers) == arr_size) {
+                    available_arg_sizes_to_layers.insert({arr_size, checking_layers});
+                    return checking_layers;
+                }
+            }
+            return 0ull;
+        }
         ~CelluarAutomaton() {}
     private:
         std::array<CellRaw,y_max> map{};
@@ -171,9 +172,11 @@ namespace gtd {
             }
             return std::make_pair(&(map[y][x]),neighbour_cells);
         }
-        std::pair<T*,std::vector<T*>> prepare_dots(size_t y, size_t x, const size_t size) {
+        template <size_t ArrSize>
+        std::pair<T*,std::array<T*,ArrSize>> prepare_dots(size_t y, size_t x) {
             std::vector<T*> neighbour_cells{};
-            long long int layers = (long long int)rule_arg_arr_layers(size);
+            neighbour_cells.reserve(ArrSize);
+            long long int layers = (long long int)rule_arg_arr_layers(ArrSize);
             //if(layers < 0) throw gtd::excp::InvalidRuleFunction("Invalid neighbours number");
             for(long long int ly = -layers+(long long int)y; ly <= layers+(long long int)y; ++ly) {
                 for(long long int lx = -layers+(long long int)x; lx <= layers+(long long int)x; ++lx) {
@@ -190,19 +193,11 @@ namespace gtd {
                     }
                 }
             }
-            return std::make_pair(&(map[y][x]),neighbour_cells);
+            std::array<T*,ArrSize> n_cells_arr{};
+            unsigned int i{};
+            for(T* cell : neighbour_cells) n_cells_arr[i++] = cell;
+            return std::make_pair(&(map[y][x]),n_cells_arr);
         }
         static inline std::map<size_t,size_t> available_arg_sizes_to_layers{};
-        static size_t rule_arg_arr_layers(size_t arr_size) {
-            if(available_arg_sizes_to_layers.count(arr_size) > 0) return available_arg_sizes_to_layers[arr_size];
-            else {
-                size_t checking_layers = std::ceil(std::sqrt(arr_size));
-                if(rule_arg_arr_size(checking_layers) == arr_size) {
-                    available_arg_sizes_to_layers.insert(arr_size, checking_layers);
-                    return checking_layers;
-                }
-            }
-            return 0ull;
-        }
     };
 }
