@@ -68,7 +68,7 @@ The first element of the pair argument is the pointer to the cell we check, the 
 ```
 
 > [!WARNING]
-> Neighbour-cell's pointer is `nullptr` if the cell we check is on the border of automaton's map and such neighbour doesn't exist
+> Neighbour-cell's pointer is `nullptr` if the cell we check is on the border of automaton's map and such neighbour doesn't exist<br>You should always check that pointer isn't `nullptr`
 
 _This section hasn't been complited yet..._
 
@@ -97,15 +97,12 @@ Code bellow is a simple exemple of setuping your automaton using this library. I
 
 ```cpp
 #include <iostream>
-#include <string>
 #include "CelluarAutomatonLibrary.hpp"
 
 bool life_rule(std::pair<bool*,std::array<bool*,8>> p) {
     unsigned int neighbours_num{};
-    for(bool* n_cell : p.second) {
-        if(n_cell == nullptr) neighbours_num += 0u;
-        else neighbours_num += (*n_cell ? 1u : 0u);
-    }
+    for(bool* n_cell : p.second)
+        if(n_cell != nullptr) neighbours_num += (*n_cell ? 1u : 0u);
     if(*p.first && (neighbours_num < 2u || neighbours_num > 3u)) return false;
     else if(!*p.first && neighbours_num == 3u) return true;
     return *p.first;
@@ -146,24 +143,16 @@ int main() {
     
 > Before reading this please check out ['Setup your CelluarAutomaton'](#setup-your-celluarautomaton) section
 
-`1-3 lines` Connecting all libraries we will use<br>
-`5-14 lines` Initializing Game of Life _rule-function_ <br>
-`15-17 lines` Initializing drawing rule-function<br>
-`20 line` Initializing CelluarAutomaton object<br>
-`21-23 lines` Adding a 'glider' structure<br>
-`26 line` Calling draw(_rule_) method<br>
-`27 line` Calling step() method<br>
+`1-2 lines` Connecting libraries<br>
+`4-11 lines` Initializing Game of Life _rule-function_ <br>
+`12-14 lines` Initializing drawing rule-function<br>
+`17 line` Initializing CelluarAutomaton object<br>
+`18-20 lines` Adding a 'glider' structure<br>
+`23 line` Calling draw(_rule_) method<br>
+`24 line` Calling step() method<br>
 <br>**What actually happends in our _rule-function_?**<br>
-Firstly I initialise `neighbours_num` variable that will represent number of live-cells near of the cell. Then I start count these neighbours - I use this code
-
-```cpp
-for(bool* n_cell : p.second) {
-    if(n_cell == nullptr) neighbours_num += 0u;
-    else neighbours_num += (*n_cell ? 1u : 0u);
-}
-```
-
-Code upper is outdated, that's better to use this code
+Our function gets `std::pair<bool*,std::array<bool*,8>>` type argument as `p`<br>
+Firstly I initialise `neighbours_num` variable that will represent number of live-cells near of the cell. Then I start count these neighbours using this cycle
 
 ```cpp
 for(bool* n_cell : p.second) // check each neighbour-cell
@@ -192,9 +181,10 @@ Library features:
 - [ ] Automaton setup using special language
 
 # Versions
-**Current version: 1.0.1**<br>
+**Current version: 1.0.2**<br>
 + 1.x.x
   + 1.0.x
+    + 1.0.2 - rule-function's argument type macro, y_size/x_size and new constructors logic added
     + 1.0.1 - base functional of CelluarAutomaton is finished, added feature of setuping automaton rule via a function
 + 0.x.x
   + 0.0.x
