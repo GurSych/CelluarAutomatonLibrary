@@ -1,11 +1,15 @@
 #pragma once
 #include "CAL_Exceptions.hpp"
 #include <stdexcept>
-#include <string>
 #include <vector>
+#include <string>
 #include <array>
+#include <cmath>
+#include <map>
+#include <set>
 
 #define GTD_CA_RULE_ARG(T) std::pair<T*,std::array<T*,8>>
+//#define GTD_CA_RULE_ARG(T,S) std::pair<T*,std::array<T*,S>>
 
 namespace gtd {
     template <class T, size_t y_max, size_t x_max>
@@ -33,7 +37,7 @@ namespace gtd {
             if(y_max < 3) throw gst::excp::OutOfRange("y-axis value is too low for creating celluar");
         }
         CelluarAutomaton(T(*r_func)(std::pair<T*,std::array<T*,8>>)) : CelluarAutomaton() {
-            rule_func = r_func;
+            rule_func =  r_func;
         }
         void step() {
             if(rule_func == nullptr) return;
@@ -74,6 +78,36 @@ namespace gtd {
             }
             for(auto h_cell : h_map) map[h_cell.y][h_cell.x] = h_cell.value;
         }
+        template <size_t Arr_Size>
+        void step(T(*r_func)(std::pair<T*,std::array<T*,Arr_Size>>)) {
+            std::vector<HCell> h_map{};
+            for(size_t y{}; y < y_max; ++y) {
+                for(size_t x{}; x < x_max; ++x) {
+                    T new_value{};
+                    if(try_catch_rule) {
+                        try {
+                            auto p = prepare_dots(y,x,Arr_Size);
+                            std::array<T*,Arr_Size> n_a{};
+                            unsigned int i{};
+                            for(T* ptr : p.second) n_a[i++] = ptr;
+                            std::pair<T*,std::array<T*,Arr_Size>> n_p{p.first,n_a};
+                            new_value = r_func(n_p);
+                        } catch(const std::exception& e) {
+                            //throw gtd::excp::InvalidRule(e.what());
+                        }
+                    } else {
+                        auto p = prepare_dots(y,x,Arr_Size);
+                        std::array<T*,Arr_Size> n_a{};
+                        unsigned int i{};
+                        for(T* ptr : p.second) n_a[i++] = ptr;
+                        std::pair<T*,std::array<T*,Arr_Size>> n_p{p.first,n_a};
+                        new_value = r_func(n_p);
+                    }
+                    if(new_value != map[y][x]) h_map.emplace_back(y,x,new_value);
+                }
+            }
+            for(auto h_cell : h_map) map[h_cell.y][h_cell.x] = h_cell.value;
+        }
         void step(std::string str) {}
         CellRaw& operator[](size_t indx) {
             if(indx < 0) throw gst::excp::OutOfRange("Value is too low for this celluar");
@@ -103,13 +137,16 @@ namespace gtd {
                     if(map[y][x] != cell.map[y][x]) return true;
             return false;
         }
-        void change_rule(T(*ptr)(std::pair<T*,std::vector<T*>>)) {
+        void change_rule(T(*ptr)(std::pair<T*,std::array<T*,8>>)) {
             rule_func = ptr;
         }
         bool endless_map = false;
         bool try_catch_rule = true;
         const size_t y_size{};
         const size_t x_size{};
+        static size_t rule_arg_arr_size(size_t layers) {
+            return std::pow((layers*2ull)+1ull,2)-1.;
+        }
         ~CelluarAutomaton() {}
     private:
         std::array<CellRaw,y_max> map{};
@@ -134,8 +171,38 @@ namespace gtd {
             }
             return std::make_pair(&(map[y][x]),neighbour_cells);
         }
+        std::pair<T*,std::vector<T*>> prepare_dots(size_t y, size_t x, const size_t size) {
+            std::vector<T*> neighbour_cells{};
+            long long int layers = (long long int)rule_arg_arr_layers(size);
+            //if(layers < 0) throw gtd::excp::InvalidRuleFunction("Invalid neighbours number");
+            for(long long int ly = -layers+(long long int)y; ly <= layers+(long long int)y; ++ly) {
+                for(long long int lx = -layers+(long long int)x; lx <= layers+(long long int)x; ++lx) {
+                    if(ly == y && lx == x) continue;
+                    if(endless_map) {
+                        if(ly < 0) ly = y_max-1;
+                        if(ly == y_max) ly = 0ll;
+                        if(lx < 0) lx = x_max-1;
+                        if(lx == x_max) lx = 0ll;
+                        neighbour_cells.push_back(&(map[ly][lx]));
+                    } else {
+                        if(ly >= 0 && ly < y_max && lx >= 0 && lx < x_max) neighbour_cells.push_back(&(map[ly][lx]));
+                        else neighbour_cells.push_back(nullptr);
+                    }
+                }
+            }
+            return std::make_pair(&(map[y][x]),neighbour_cells);
+        }
+        static inline std::map<size_t,size_t> available_arg_sizes_to_layers{};
+        static size_t rule_arg_arr_layers(size_t arr_size) {
+            if(available_arg_sizes_to_layers.count(arr_size) > 0) return available_arg_sizes_to_layers[arr_size];
+            else {
+                size_t checking_layers = std::ceil(std::sqrt(arr_size));
+                if(rule_arg_arr_size(checking_layers) == arr_size) {
+                    available_arg_sizes_to_layers.insert(arr_size, checking_layers);
+                    return checking_layers;
+                }
+            }
+            return 0ull;
+        }
     };
-
-    template <class T>
-    T standart_rule(std::pair<T*,std::array<T*,8>>) {}
 }
