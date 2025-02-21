@@ -52,6 +52,8 @@ Code upper creates celluar automaton that could be represented like:
 0 0 0 0
 ```
 
+ Size values are saved in `y_size` and `x_size` const fields
+
 ## Setup your CelluarAutomaton
 Setuping rules is the most important part of any celluar automaton. For doing this you should create special _rule-function_ <br>
 Your _rule-function_ for `CelluarAutomaton<T,_,_>` must return `T` type and take one argument: `std::pair<T*,std::array<T*,8>>` type (std::pair with < T-pointer and std::array with < 8 T-pointers > >) <br>
@@ -70,7 +72,40 @@ The first element of the pair argument is the pointer to the cell we check, the 
 > [!WARNING]
 > Neighbour-cell's pointer is `nullptr` if the cell we check is on the border of automaton's map and such neighbour doesn't exist<br>You should always check that pointer isn't `nullptr`
 
-_This section hasn't been complited yet..._
+This _rule-function_ can be send into object's constructor, be changed via change_rule(_rule_) method and be used via simple step() method. You can also use this rule separately with step(_rule_) method. 
+
+### What to do if you need to check more neighbours?
+
+> You should change a bit your _rule-function_ - put the new number of neighbours you need.
+
+Standart rule-function gets `std::pair<T*,std::array<T*,8>>` argument, your new rule must get `std::pair<T*,std::array<T*,_>>` ( `_` is a place for the new neighbours number).
+
+> [!NOTE]
+> You can't save this _rule-function_ in object, you can only use it with step(_rule_) method
+
+You can't use any number of neighbours. To know correect number you should calculate this mathematical expression: $(((layers*2)+1)^2)-1$ or use `rule_arg_arr_size` static method of CelluarAutomaton class<br>
+Layers - how many neighbourhood cubes we check. One layer is standart - that's a 3x3 cube with 8 neighbours, two layers - 5x5 cube with 24 neighbours, three layers - 7x7 cube with 48 neighbours etc...<br>
+Array of neighbours will stil have fixed indexing like this:
+
+```
+1 layer: 0 1 2   2 layers:  0  1  2  3  4   3 layers:  0  1  2  3  4  5  6
+         3   4              5  6  7  8  9              7  8  9 10 11 12 13
+         5 6 7             10 11    13 14             14 15 16 17 18 19 20
+                           15 16 17 18 19             21 22 23    24 25 26
+                           20 21 22 23 24             17 28 29 30 31 32 33
+                                                      34 35 36 37 38 39 40
+                                                      41 42 43 44 45 46 47
+```
+
+there're also examples of such rules' function-signatures:
+
+```cpp
+T rule_of_two_layers(std::pair<T*,std::array<T*,24>>);
+T rule_of_three_layers(std::pair<T*,std::array<T*,48>>);
+```
+
+### Drawing your CelluarAutomaton object
+You can get `std::string` object that would represent your automaton's map using draw(_rule_) method. Rule is a function that takes `T` and returns `std::string` - string that will be added to the main one
 
 ### Equating CelluarAutomaton objects
 You can using == and != operators to check equality of two CelluarAutomaton objects
