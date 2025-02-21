@@ -2,7 +2,7 @@
 #include <exception>
 #include <string>
 
-namespace gst {
+namespace gtd {
     namespace excp {
         class OutOfRange: public std::exception {
         public:
@@ -18,15 +18,6 @@ namespace gst {
             InvalidRule(const char* msg) : message{msg} {}
                 const char* what() const throw() {
                     return (std::string{"CAL: Current step's rule is invalid! "} + message).c_str();
-                }
-        private:
-            std::string message{};
-        };
-        class InvalidRuleFunction: public std::exception {
-        public:
-            InvalidRuleFunction(const char* msg) : message{msg} {}
-                const char* what() const throw() {
-                    return (std::string{"CAL: Your rule-function is invalid! "} + message).c_str();
                 }
         private:
             std::string message{};

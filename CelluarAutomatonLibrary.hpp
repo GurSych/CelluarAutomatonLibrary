@@ -24,16 +24,16 @@ namespace gtd {
         public:
             CellRaw() {}
             T& operator[](size_t indx) {
-                if(indx < 0) throw gst::excp::OutOfRange("Value is too low for this celluar raw");
-                if(indx >= x_max) throw gst::excp::OutOfRange("Value is too big for this celluar raw");
+                if(indx < 0) throw gtd::excp::OutOfRange("Value is too low for this celluar raw");
+                if(indx >= x_max) throw gtd::excp::OutOfRange("Value is too big for this celluar raw");
                 return raw[indx];
             }
         private:
             std::array<T,x_max> raw{};
         };
         CelluarAutomaton() : y_size{y_max}, x_size{x_max} {
-            if(x_max < 3) throw gst::excp::OutOfRange("x-axis value is too low for creating celluar");
-            if(y_max < 3) throw gst::excp::OutOfRange("y-axis value is too low for creating celluar");
+            if(x_max < 3) throw gtd::excp::OutOfRange("x-axis value is too low for creating celluar");
+            if(y_max < 3) throw gtd::excp::OutOfRange("y-axis value is too low for creating celluar");
         }
         CelluarAutomaton(T(*r_func)(std::pair<T*,std::array<T*,8>>)) : CelluarAutomaton() {
             rule_func =  r_func;
@@ -48,7 +48,7 @@ namespace gtd {
                         try {
                             new_value = rule_func(prepare_dots(y,x));
                         } catch(const std::exception& e) {
-                            //throw gst::excp::InvalidRule(e.what());
+                            throw gtd::excp::InvalidRule(e.what());
                         }
                     } else {
                         new_value = rule_func(prepare_dots(y,x));
@@ -67,7 +67,7 @@ namespace gtd {
                         try {
                             new_value = r_func(prepare_dots(y,x));
                         } catch(const std::exception& e) {
-                            //throw gtd::excp::InvalidRule(e.what());
+                            throw gtd::excp::InvalidRule(e.what());
                         }
                     } else {
                         new_value = r_func(prepare_dots(y,x));
@@ -79,7 +79,7 @@ namespace gtd {
         }
         template <size_t Arr_Size>
         void step(T(*r_func)(std::pair<T*,std::array<T*,Arr_Size>>)) {
-            //if(rule_arg_arr_layers(Arr_Size) == 0ull) throw gtd::excp::InvalidRuleFunction("Invalid neighbours number");
+            if(rule_arg_arr_layers(Arr_Size) == 0ull) throw gtd::excp::InvalidRule("Invalid neighbours number");
             std::vector<HCell> h_map{};
             for(size_t y{}; y < y_max; ++y) {
                 for(size_t x{}; x < x_max; ++x) {
@@ -88,7 +88,7 @@ namespace gtd {
                         try {
                             new_value = r_func(prepare_dots<Arr_Size>(y,x));
                         } catch(const std::exception& e) {
-                            //throw gtd::excp::InvalidRule(e.what());
+                            throw gtd::excp::InvalidRule(e.what());
                         }
                     } else {
                         new_value = r_func(prepare_dots<Arr_Size>(y,x));
@@ -100,8 +100,8 @@ namespace gtd {
         }
         void step(std::string str) {}
         CellRaw& operator[](size_t indx) {
-            if(indx < 0) throw gst::excp::OutOfRange("Value is too low for this celluar");
-            if(indx >= y_max) throw gst::excp::OutOfRange("Value is too big for this celluar");
+            if(indx < 0) throw gtd::excp::OutOfRange("Value is too low for this celluar");
+            if(indx >= y_max) throw gtd::excp::OutOfRange("Value is too big for this celluar");
             return map[indx];
         }
         void draw() {}
@@ -159,11 +159,12 @@ namespace gtd {
                 for(long long int lx = -1ll+(long long int)x; lx <= 1ll+(long long int)x; ++lx) {
                     if(ly == y && lx == x) continue;
                     if(endless_map) {
-                        if(ly < 0) ly = y_max-1;
-                        if(ly == y_max) ly = 0ll;
-                        if(lx < 0) lx = x_max-1;
-                        if(lx == x_max) lx = 0ll;
-                        neighbour_cells[i++] = &(map[ly][lx]);
+                        size_t n_ly{}; size_t n_lx{};
+                        if(ly < 0ll) n_ly = y_max-1ll;
+                        else if(ly == y_max) n_ly = 0ll;
+                        if(lx < 0ll) n_lx = x_max-1ll;
+                        else if(lx == x_max) n_lx = 0ll;
+                        neighbour_cells[i++] = &(map[n_ly][n_lx]);
                     } else {
                         if(ly >= 0 && ly < y_max && lx >= 0 && lx < x_max) neighbour_cells[i++] = &(map[ly][lx]);
                         else neighbour_cells[i++] = nullptr;
@@ -174,29 +175,27 @@ namespace gtd {
         }
         template <size_t ArrSize>
         std::pair<T*,std::array<T*,ArrSize>> prepare_dots(size_t y, size_t x) {
-            std::vector<T*> neighbour_cells{};
-            neighbour_cells.reserve(ArrSize);
             long long int layers = (long long int)rule_arg_arr_layers(ArrSize);
-            //if(layers < 0) throw gtd::excp::InvalidRuleFunction("Invalid neighbours number");
+            if(layers == 0ll) throw gtd::excp::InvalidRule("Invalid neighbours number");
+            std::array<T*,ArrSize> neighbour_cells{};
+            unsigned long long int i{};
             for(long long int ly = -layers+(long long int)y; ly <= layers+(long long int)y; ++ly) {
                 for(long long int lx = -layers+(long long int)x; lx <= layers+(long long int)x; ++lx) {
                     if(ly == y && lx == x) continue;
                     if(endless_map) {
-                        if(ly < 0) ly = y_max-1;
-                        if(ly == y_max) ly = 0ll;
-                        if(lx < 0) lx = x_max-1;
-                        if(lx == x_max) lx = 0ll;
-                        neighbour_cells.push_back(&(map[ly][lx]));
+                        size_t n_ly{}; size_t n_lx{};
+                        if(ly < 0ll) n_ly = y_max-1ll;
+                        else if(ly == y_max) n_ly = 0ll;
+                        if(lx < 0ll) n_lx = x_max-1ll;
+                        else if(lx == x_max) n_lx = 0ll;
+                        neighbour_cells[i++] = &(map[n_ly][n_lx]);
                     } else {
-                        if(ly >= 0 && ly < y_max && lx >= 0 && lx < x_max) neighbour_cells.push_back(&(map[ly][lx]));
-                        else neighbour_cells.push_back(nullptr);
+                        if(ly >= 0 && ly < y_max && lx >= 0 && lx < x_max) neighbour_cells[i++] = &(map[ly][lx]);
+                        else neighbour_cells[i++] = nullptr;
                     }
                 }
             }
-            std::array<T*,ArrSize> n_cells_arr{};
-            unsigned int i{};
-            for(T* cell : neighbour_cells) n_cells_arr[i++] = cell;
-            return std::make_pair(&(map[y][x]),n_cells_arr);
+            return std::make_pair(&(map[y][x]),neighbour_cells);
         }
         static inline std::map<size_t,size_t> available_arg_sizes_to_layers{};
     };
