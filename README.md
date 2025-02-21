@@ -181,7 +181,10 @@ Library features:
 - [ ] Automaton setup using special language
 
 # Versions
-**Current version: 1.0.2**<br>
+**Current version: 2.0.1**<br>
++ 2.x.x
+  + 2.0.x
+    + 2.0.1 - added multi-layer rules and few static methods
 + 1.x.x
   + 1.0.x
     + 1.0.2 - rule-function's argument type macro, y_size/x_size and new constructors logic added
