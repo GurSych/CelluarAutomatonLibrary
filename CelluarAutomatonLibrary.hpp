@@ -79,19 +79,20 @@ namespace gtd {
         }
         template <size_t Arr_Size>
         void step(T(*r_func)(std::pair<T*,std::array<T*,Arr_Size>>)) {
-            if(rule_arg_arr_layers(Arr_Size) == 0ull) throw gtd::excp::InvalidRule("Invalid neighbours number");
+            long long int layers = (long long int)rule_arg_arr_layers(Arr_Size);
+            if(layers == 0ull) throw gtd::excp::InvalidRule("Invalid neighbours number");
             std::vector<HCell> h_map{};
             for(size_t y{}; y < y_max; ++y) {
                 for(size_t x{}; x < x_max; ++x) {
                     T new_value{};
                     if(try_catch_rule) {
                         try {
-                            new_value = r_func(prepare_dots<Arr_Size>(y,x));
+                            new_value = r_func(prepare_dots<Arr_Size>(y,x,layers));
                         } catch(const std::exception& e) {
                             throw gtd::excp::InvalidRule(e.what());
                         }
                     } else {
-                        new_value = r_func(prepare_dots<Arr_Size>(y,x));
+                        new_value = r_func(prepare_dots<Arr_Size>(y,x,layers));
                     }
                     if(new_value != map[y][x]) h_map.emplace_back(y,x,new_value);
                 }
@@ -174,9 +175,7 @@ namespace gtd {
             return std::make_pair(&(map[y][x]),neighbour_cells);
         }
         template <size_t ArrSize>
-        std::pair<T*,std::array<T*,ArrSize>> prepare_dots(size_t y, size_t x) {
-            long long int layers = (long long int)rule_arg_arr_layers(ArrSize);
-            if(layers == 0ll) throw gtd::excp::InvalidRule("Invalid neighbours number");
+        std::pair<T*,std::array<T*,ArrSize>> prepare_dots(size_t y, size_t x, size_t layers) {
             std::array<T*,ArrSize> neighbour_cells{};
             unsigned long long int i{};
             for(long long int ly = -layers+(long long int)y; ly <= layers+(long long int)y; ++ly) {
