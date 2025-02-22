@@ -226,17 +226,17 @@ namespace gtd {
                 long long int ly = p.first+(long long int)y;
                 long long int lx = p.second+(long long int)y;
                 if(ly == y && lx == x) throw gtd::excp::InvalidRule("Cell itself in array of neighbours");
-                    if(endless_map) {
-                        size_t n_ly{}; size_t n_lx{};
-                        if(ly < 0ll) n_ly = y_size+ly;
-                        else if(ly >= y_size) n_ly = ly-y_size;
-                        if(lx < 0ll) n_lx = x_size+lx;
-                        else if(lx >= x_size) n_lx = lx-x_size;
-                        neighbour_cells[i++] = &(map[n_ly][n_lx]);
-                    } else {
-                        if(ly >= 0 && ly < y_size && lx >= 0 && lx < x_size) neighbour_cells[i++] = &(map[ly][lx]);
-                        else neighbour_cells[i++] = nullptr;
-                    }
+                if(endless_map) {
+                    size_t n_ly{}; size_t n_lx{};
+                    if(ly < 0ll) n_ly = y_size+ly;
+                    else if(ly >= y_size) n_ly = ly-y_size;
+                    if(lx < 0ll) n_lx = x_size+lx;
+                    else if(lx >= x_size) n_lx = lx-x_size;
+                    neighbour_cells[i++] = &(map[n_ly][n_lx]);
+                } else {
+                    if(ly >= 0 && ly < y_size && lx >= 0 && lx < x_size) neighbour_cells[i++] = &(map[ly][lx]);
+                    else neighbour_cells[i++] = nullptr;
+                }
             }
             return std::make_pair(&(map[y][x]),neighbour_cells);
         }
