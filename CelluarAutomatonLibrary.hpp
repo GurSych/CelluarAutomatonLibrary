@@ -36,6 +36,11 @@ namespace gtd {
             if(x_max < 3) throw gtd::excp::OutOfRange("x-axis value is too low for creating celluar");
             if(y_max < 3) throw gtd::excp::OutOfRange("y-axis value is too low for creating celluar");
         }
+        CelluarAutomaton(gtd::CelluarAutomaton<T,y_max,x_max>& autom) : CelluarAutomaton() {
+            size_t i{};
+            for(CellRaw& arr : autom.map) map[i++] = arr;
+            rule_func =  autom.rule_func;
+        }
         CelluarAutomaton(T(*r_func)(std::pair<T*,std::array<T*,8>>)) : CelluarAutomaton() {
             rule_func =  r_func;
         }
@@ -138,6 +143,15 @@ namespace gtd {
             }
             return output;
         }
+        //void operator=(gtd::CelluarAutomaton<T,y_max,x_max>& autom) {
+        //    size_t i{};
+        //    for(CellRaw& arr : autom.map) map[i++] = arr;
+        //    rule_func = autom.rule_func;
+        //}
+        //void operator<<=(gtd::CelluarAutomaton<T,y_max,x_max>& autom) {
+        //    size_t i{};
+        //    for(CellRaw& arr : autom.map) map[i++] = arr;
+        //}
         bool operator==(gtd::CelluarAutomaton<T,x_max,y_max>& cell) {
             for(size_t y{}; y < y_size; ++y) 
                 for(size_t x{}; x < x_size; ++x) 
@@ -225,7 +239,7 @@ namespace gtd {
             for(std::pair<long long int,long long int> p : neighb_rule) {
                 long long int ly = p.first+(long long int)y;
                 long long int lx = p.second+(long long int)y;
-                if(ly == y && lx == x) throw gtd::excp::InvalidRule("Cell itself in array of neighbours");
+                if(ly == y && lx == x) throw gtd::excp::InvalidRule("Cell itself is in array of neighbours");
                 if(endless_map) {
                     size_t n_ly{}; size_t n_lx{};
                     if(ly < 0ll) n_ly = y_size+ly;
