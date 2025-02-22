@@ -246,6 +246,8 @@ namespace gtd {
                     else if(ly >= y_size) n_ly = ly-y_size;
                     if(lx < 0ll) n_lx = x_size+lx;
                     else if(lx >= x_size) n_lx = lx-x_size;
+                    if(ly >= 0 && ly < y_size && lx >= 0 && lx < x_size) neighbour_cells[i++] = &(map[ly][lx]);
+                    else neighbour_cells[i++] = throw gtd::excp::InvalidRule("Incorrect neighbour rule");
                     neighbour_cells[i++] = &(map[n_ly][n_lx]);
                 } else {
                     if(ly >= 0 && ly < y_size && lx >= 0 && lx < x_size) neighbour_cells[i++] = &(map[ly][lx]);
