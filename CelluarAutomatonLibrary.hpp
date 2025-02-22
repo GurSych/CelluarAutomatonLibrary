@@ -9,6 +9,7 @@
 #include <set>
 
 #define GTD_CA_RULE_ARG(T) std::pair<T*,std::array<T*,8>>
+#define GTD_CA_NEIGHB_RULE(Size) std::array<std::pair<long long int,long long int>,Size>
 
 namespace gtd {
     template <class T, size_t y_max, size_t x_max>
@@ -93,6 +94,27 @@ namespace gtd {
                         }
                     } else {
                         new_value = r_func(prepare_dots<Arr_Size>(y,x,layers));
+                    }
+                    if(new_value != map[y][x]) h_map.emplace_back(y,x,new_value);
+                }
+            }
+            for(auto h_cell : h_map) map[h_cell.y][h_cell.x] = h_cell.value;
+        }
+        template <size_t Arr_Size>
+        void step(T(*r_func)(std::pair<T*,std::array<T*,Arr_Size>>), const GTD_CA_NEIGHB_RULE(Arr_Size)& neighb_rule) {
+            if(Arr_Size == 0ull) throw gtd::excp::InvalidRule("Too low number of neighbours");
+            std::vector<HCell> h_map{};
+            for(size_t y{}; y < y_size; ++y) {
+                for(size_t x{}; x < x_size; ++x) {
+                    T new_value{};
+                    if(try_catch_rule) {
+                        try {
+                            new_value = r_func(prepare_dots(y,x,neighb_rule));
+                        } catch(const std::exception& e) {
+                            throw gtd::excp::InvalidRule(e.what());
+                        }
+                    } else {
+                        new_value = r_func(prepare_dots(y,x,neighb_rule));
                     }
                     if(new_value != map[y][x]) h_map.emplace_back(y,x,new_value);
                 }
@@ -193,6 +215,28 @@ namespace gtd {
                         else neighbour_cells[i++] = nullptr;
                     }
                 }
+            }
+            return std::make_pair(&(map[y][x]),neighbour_cells);
+        }
+        template <size_t ArrSize>
+        std::pair<T*,std::array<T*,ArrSize>> prepare_dots(const size_t y, const size_t x, const GTD_CA_NEIGHB_RULE(ArrSize)& neighb_rule) {
+            std::array<T*,ArrSize> neighbour_cells{};
+            unsigned long long int i{};
+            for(std::pair<long long int,long long int> p : neighb_rule) {
+                long long int ly = p.first+(long long int)y;
+                long long int lx = p.second+(long long int)y;
+                if(ly == y && lx == x) throw gtd::excp::InvalidRule("Cell itself in array of neighbours");
+                    if(endless_map) {
+                        size_t n_ly{}; size_t n_lx{};
+                        if(ly < 0ll) n_ly = y_size+ly;
+                        else if(ly >= y_size) n_ly = ly-y_size;
+                        if(lx < 0ll) n_lx = x_size+lx;
+                        else if(lx >= x_size) n_lx = lx-x_size;
+                        neighbour_cells[i++] = &(map[n_ly][n_lx]);
+                    } else {
+                        if(ly >= 0 && ly < y_size && lx >= 0 && lx < x_size) neighbour_cells[i++] = &(map[ly][lx]);
+                        else neighbour_cells[i++] = nullptr;
+                    }
             }
             return std::make_pair(&(map[y][x]),neighbour_cells);
         }
