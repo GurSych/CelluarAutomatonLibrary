@@ -263,7 +263,7 @@ Library features:
 **Current version: 2.1.1**<br>
 + 2.x.x
   + 2.1.x
-    + 2.1.1 - neighbour catching rule feature, endless_map and new constructors
+    + 2.1.1 - neighbour catching rule feature and new constructors
   + 2.0.x
     + 2.0.2 - endless_map option is done
     + 2.0.1 - added multi-layer rules and few static methods
