@@ -36,6 +36,43 @@ int int int int int int int
 > [!WARNING]
 > Size of each axis must be in range of size_t type and be 3 or larger
 
+<details>
+<summary>All constructors</summary>
+    
+Default constructor just initializes cells with default value but there're four more constructors:
++ _Rule-function_ constructor gets your [standard](#setup-your-celluarautomaton) _rule-function_ and saves it (cell-initializing with default value). Example:
+
+```cpp
+int rule(std::pair<T*,std::array<T*,8>>);
+gtd::CelluarAutomaton<int,4,7> automaton{rule}; // gtd::CelluarAutomaton<type,rows,columns>(rule-function)
+```
+
++ Default value constructor gets value and assigns it to each cell. Example:
+
+```cpp
+int value = 17;
+gtd::CelluarAutomaton<int,4,7> automaton{value}; // gtd::CelluarAutomaton<type,rows,columns>(standard value)
+```
+
++ Default value + _rule-function_ constructor uses concepts of two previews' ones. Example:
+
+```cpp
+int value = 17;
+int rule(std::pair<T*,std::array<T*,8>>);
+gtd::CelluarAutomaton<int,4,7> automaton{value,rule}; // gtd::CelluarAutomaton<type,rows,columns>(standard value, rule-function)
+```
+
++ Object constructor gets another CelluarAutomaton object and copies its map and rule. Example:
+
+```cpp
+int value = 17;
+int rule(std::pair<T*,std::array<T*,8>>);
+gtd::CelluarAutomaton<int,4,7> automaton{value,rule};
+gtd::CelluarAutomaton<int,4,7> new_automaton{automaton}; // gtd::CelluarAutomaton<type,rows,columns>(CelluarAutomaton object)
+```
+
+</details>
+
 ### Indexing CelluarAutomaton object
 Map in CelluarAutomaton has two dimantions so you should use double indexing operator<br>
 Indexing starts from zero value
@@ -55,8 +92,8 @@ Code upper creates celluar automaton that could be represented like:
  Size values are saved in `y_size` and `x_size` const fields
 
 ## Setup your CelluarAutomaton
-Setuping rules is the most important part of any celluar automaton. For doing this you should create special _rule-function_ <br>
-Your _rule-function_ for `CelluarAutomaton<T,_,_>` must return `T` type and take one argument: `std::pair<T*,std::array<T*,8>>` type (std::pair with < T-pointer and std::array with < 8 T-pointers > >) <br>
+Setting up rules is the most important part of any celluar automaton. For doing this you should create special _rule-function_ <br>
+Your _rule-function_ for `CelluarAutomaton<T,_,_>` must return `T` type and  one argument: `std::pair<T*,std::array<T*,8>>` type (std::pair with < T-pointer and std::array with < 8 T-pointers > >) <br>
 _Rule-function_ is called for each cell in your automaton, it must analize input data and then **return** new (or the same) value for the cell
 
 > [!CAUTION]
@@ -78,14 +115,14 @@ This _rule-function_ can be send into object's constructor, be changed via chang
 
 > You should change a bit your _rule-function_ - put the new number of neighbours you need.
 
-Standart rule-function gets `std::pair<T*,std::array<T*,8>>` argument, your new rule must get `std::pair<T*,std::array<T*,_>>` ( `_` is a place for the new neighbours number).
+Standard rule-function gets `std::pair<T*,std::array<T*,8>>` argument, your new rule must get `std::pair<T*,std::array<T*,_>>` ( `_` is a place for the new neighbours number).
 
 > [!NOTE]
 > You can't save this _rule-function_ in object, you can only use it with step(_rule_) method
 
 You can't use any number of neighbours. To know correect number you should calculate this mathematical expression: $(((layers*2)+1)^2)-1$ or use `rule_arg_arr_size` static method of CelluarAutomaton class<br>
-Layers - how many neighbourhood cubes we check. One layer is standart - that's a 3x3 cube with 8 neighbours, two layers - 5x5 cube with 24 neighbours, three layers - 7x7 cube with 48 neighbours etc...<br>
-Array of neighbours will stil have fixed indexing like this:
+Layers - how many neighbourhood cubes we check. One layer is standard - that's a 3x3 square with 8 neighbours, two layers - 5x5 square with 24 neighbours, three layers - 7x7 square with 48 neighbours etc...<br>
+Array of neighbours will still have fixed indexing like this:
 
 ```
 1 layer: 0 1 2   2 layers:  0  1  2  3  4   3 layers:  0  1  2  3  4  5  6
@@ -104,14 +141,18 @@ T rule_of_two_layers(std::pair<T*,std::array<T*,24>>);
 T rule_of_three_layers(std::pair<T*,std::array<T*,48>>);
 ```
 
-### Drawing your CelluarAutomaton object
-You can get `std::string` object that would represent your automaton's map using draw(_rule_) method. Rule is a function that takes `T` and returns `std::string` - string that will be added to the main one
+### Custom catching neighbour rule
+There's step(_rule_,_rule_) method that allows you send one more rule: rule of catching neighbours. This rule is a `std::array<std::pair<long long int,long long int>,Size>` type argument, each pair is y and x values those are added to dots coordinates to get neighbour coordinates. First _rule-function_ must get the same array-size: `std::pair<T*,std::array<T*,Size>>`
 
-### Equating CelluarAutomaton objects
-You can using == and != operators to check equality of two CelluarAutomaton objects
+### Drawing your CelluarAutomaton object
+You can get `std::string` object that would represent your automaton's map using draw(_rule_) method. Rule is a function that gets `T` and returns `std::string` - string that will be added to the main one
+
+### Operators overloadings
+**Equating CelluarAutomaton objects**<br>
+You can use == and != operators to check equality of two CelluarAutomaton objects
 
 > [!WARNING]
-> This operators won't work if the type you chose doesn't have this operators overloadings
+> This operators won't work if the type you chose doesn't have these operators overloadings
 
 <details>
 <summary>Code example</summary>
@@ -127,8 +168,11 @@ std::cout << automaton1 == automaton2 << ' ' << automaton1 != automaton2 << std:
 
 </details>
 
+**Assignment operator**<br>
+You can use = operator to get map and rule from another CelluarAutomaton object
+
 # Conway's Game of Life in less than 30 lines of code
-Code bellow is a simple exemple of setuping your automaton using this library. It creates 8x14 bool-type automaton with Game of Life rule. Then it adds there a 'glider' structure and after starts a do-while cycle with calling step() and draw(_rule_) methods.
+Code bellow is a simple example of setting up your automaton using this library. It creates 8x14 bool-type automaton with Game of Life rule. Then it adds there a 'glider' structure and after starts a do-while cycle with calling step() and draw(_rule_) methods.
 
 ```cpp
 #include <iostream>
@@ -174,7 +218,7 @@ int main() {
 
 
 <details>
-<summary>How does it work?</summary>
+<summary>How it works?</summary>
     
 > Before reading this please check out ['Setup your CelluarAutomaton'](#setup-your-celluarautomaton) section
 
@@ -205,7 +249,7 @@ return *p.first; // cell saves its state if we doesn't change it upper
 </details>
 
 # Plans and ideas
-Library will provide you range of celluar automaton classes which you will be able to setup using lambda-function or even using simple template-language<br>
+Library will provide you with a range of celluar automaton classes which you will be able to setup using lambda-function or even using simple template-language<br>
 Added and finished classes:
 - [x] CelluarAutomaton
 - [ ] CelluarAutomaton1D
@@ -216,15 +260,17 @@ Library features:
 - [ ] Automaton setup using special language
 
 # Versions
-**Current version: 2.0.2**<br>
+**Current version: 2.1.1**<br>
 + 2.x.x
+  + 2.1.x
+    + 2.1.1 - neighbour catching rule feature and new constructors
   + 2.0.x
     + 2.0.2 - endless_map option is done
     + 2.0.1 - added multi-layer rules and few static methods
 + 1.x.x
   + 1.0.x
     + 1.0.2 - rule-function's argument type macro, y_size/x_size and new constructors logic added
-    + 1.0.1 - base functional of CelluarAutomaton is finished, added feature of setuping automaton rule via a function
+    + 1.0.1 - base functional of CelluarAutomaton is finished, added feature of setting up automaton rule via a function
 + 0.x.x
   + 0.0.x
     + 0.0.1 - added simple CelluarAutomaton class with indexing operator overload
