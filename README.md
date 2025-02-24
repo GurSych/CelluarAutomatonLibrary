@@ -143,7 +143,17 @@ T rule_of_three_layers(std::pair<T*,std::array<T*,48>>);
 
 ### Custom catching neighbour rule
 There's step(_rule_,_rule_) method that allows you send one more rule: rule of catching neighbours. This rule is a `std::array<std::pair<long long int,long long int>,Size>` type argument, each pair is y and x values those are added to dots coordinates to get neighbour coordinates. First _rule-function_ must get the same array-size: `std::pair<T*,std::array<T*,Size>>`<br>
-Example of indexing neighbour array for `step(std::pair<T*,std::array<T*,5>>,std::array<std::pair<long long int,long long int>,5>{std::pair<long long int,long long int>{-1,1},{2,-2},{1,1},{0,-1},{-2,-1}})` around `■` cell:
+Example of indexing neighbour array for 
+
+```cpp
+T rule(std::pair<T*,std::array<T*,5>>);
+std::array<std::pair<long long int,long long int>,5> neighbor_rule{
+    std::pair<long long int,long long int>{-1,1},{2,-2},{1,1},{0,-1},{-2,-1}
+};
+automaton.step(rule,neighbor_rule); // automaton -> gtd::CelluarAutomaton<T,_,_>
+```
+
+around `■` cell:
 
 ```
 · 4 · · ·
