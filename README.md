@@ -142,7 +142,7 @@ T rule_of_three_layers(std::pair<T*,std::array<T*,48>>);
 ```
 
 ### Custom catching neighbour rule
-There's step(_rule_,_rule_) method that allows you send one more rule: rule of catching neighbours. This rule is a `std::array<std::pair<long long int,long long int>,Size>` type argument, each pair is y and x values those are added to dots coordinates to get neighbour coordinates. First _rule-function_ must get the same array-size: `std::pair<T*,std::array<T*,Size>>`<br>
+There's step(_rule_,_rule_) method that allows you send one more rule: rule of catching neighbours. This rule is a `std::array<std::pair<long long int,long long int>,Size>` type argument, each pair is y and x values those are added to dots coordinates to get neighbour coordinates. First _rule-function_ must get the same size of array: `std::pair<T*,std::array<T*,Size>>`<br>
 Example of indexing neighbour array for 
 
 ```cpp
