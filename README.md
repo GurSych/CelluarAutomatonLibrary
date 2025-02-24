@@ -54,7 +54,7 @@ int value = 17;
 gtd::CelluarAutomaton<int,4,7> automaton{value}; // gtd::CelluarAutomaton<type,rows,columns>(standart value)
 ```
 
-+ Default value + _Rule-function_ constructor uses concepts of two previews' ones. Example:
++ Default value + _rule-function_ constructor uses concepts of two previews' ones. Example:
 
 ```cpp
 int value = 17;
