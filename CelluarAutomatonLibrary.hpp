@@ -36,13 +36,22 @@ namespace gtd {
             if(x_max < 3) throw gtd::excp::OutOfRange("x-axis value is too low for creating celluar");
             if(y_max < 3) throw gtd::excp::OutOfRange("y-axis value is too low for creating celluar");
         }
-        CelluarAutomaton(gtd::CelluarAutomaton<T,y_max,x_max>& autom) : CelluarAutomaton() {
+        CelluarAutomaton(const T tmpl) : y_size{y_max}, x_size{x_max} {
+            if(x_max < 3) throw gtd::excp::OutOfRange("x-axis value is too low for creating celluar");
+            if(y_max < 3) throw gtd::excp::OutOfRange("y-axis value is too low for creating celluar");
+            for(size_t y{}; y < y_size; ++y) for(size_t x{}; x < x_size; ++x) map[y][x] = tmpl;
+        }
+        CelluarAutomaton(const gtd::CelluarAutomaton<T,y_max,x_max>& autom) : CelluarAutomaton() {
             size_t i{};
             for(CellRaw& arr : autom.map) map[i++] = arr;
             rule_func =  autom.rule_func;
         }
-        CelluarAutomaton(T(*r_func)(std::pair<T*,std::array<T*,8>>)) : CelluarAutomaton() {
+        CelluarAutomaton(const T(*r_func)(std::pair<T*,std::array<T*,8>>)) : CelluarAutomaton() {
             rule_func =  r_func;
+        }
+        CelluarAutomaton(const T tmpl, const T(*r_func)(std::pair<T*,std::array<T*,8>>)) : CelluarAutomaton() {
+            rule_func =  r_func;
+            for(size_t y{}; y < y_size; ++y) for(size_t x{}; x < x_size; ++x) map[y][x] = tmpl;
         }
         void step() {
             if(rule_func == nullptr) return;
