@@ -149,7 +149,7 @@ You can get `std::string` object that would represent your automaton's map using
 
 ### Operators overloadings
 **Equating CelluarAutomaton objects**<br>
-You can using == and != operators to check equality of two CelluarAutomaton objects
+You can use == and != operators to check equality of two CelluarAutomaton objects
 
 > [!WARNING]
 > This operators won't work if the type you chose doesn't have this operators overloadings
@@ -169,7 +169,7 @@ std::cout << automaton1 == automaton2 << ' ' << automaton1 != automaton2 << std:
 </details>
 
 **Assignment operator**<br>
-You can using = operator to get map and rule from another CelluarAutomaton object
+You can use = operator to get map and rule from another CelluarAutomaton object
 
 # Conway's Game of Life in less than 30 lines of code
 Code bellow is a simple exemple of setuping your automaton using this library. It creates 8x14 bool-type automaton with Game of Life rule. Then it adds there a 'glider' structure and after starts a do-while cycle with calling step() and draw(_rule_) methods.
@@ -218,7 +218,7 @@ int main() {
 
 
 <details>
-<summary>How does it work?</summary>
+<summary>How it works?</summary>
     
 > Before reading this please check out ['Setup your CelluarAutomaton'](#setup-your-celluarautomaton) section
 
