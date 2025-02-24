@@ -10,6 +10,7 @@
 
 #define GTD_CA_RULE_ARG(T) std::pair<T*,std::array<T*,8>>
 #define GTD_CA_NEIGHB_RULE(Size) std::array<std::pair<long long int,long long int>,Size>
+#define GTD_CA_NEIGHB_PAIR std::pair<long long int,long long int>
 
 namespace gtd {
     template <class T, size_t y_max, size_t x_max>
