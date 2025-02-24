@@ -142,10 +142,22 @@ T rule_of_three_layers(std::pair<T*,std::array<T*,48>>);
 ```
 
 ### Custom catching neighbour rule
-There's step(_rule_,_rule_) method that allows you send one more rule: rule of catching neighbours. This rule is a `std::array<std::pair<long long int,long long int>,Size>` type argument, each pair is y and x values those are added to dots coordinates to get neighbour coordinates. First _rule-function_ must get the same array-size: `std::pair<T*,std::array<T*,Size>>`
+There's step(_rule_,_rule_) method that allows you send one more rule: rule of catching neighbours. This rule is a `std::array<std::pair<long long int,long long int>,Size>` type argument, each pair is y and x values those are added to dots coordinates to get neighbour coordinates. First _rule-function_ must get the same array-size: `std::pair<T*,std::array<T*,Size>>`<br>
+Example of indexing neighbour array for `step(std::pair<T*,std::array<T*,5>>,std::array<std::pair<long long int,long long int>,5>{std::pair<long long int,long long int>{-1,1},{2,-2},{1,1},{0,-1},{-2,-1}})` around `■` cell:
+
+```
+· 4 · · ·
+· · · 0 ·
+· 3 ■ · · 
+· · · 2 ·
+1 · · · ·
+```
+
+> [!TIP]
+> You can use `GTD_CA_NEIGHB_RULE(Size)` macro for `std::array<std::pair<long long int,long long int>,Size>` type and `GTD_CA_NEIGHB_PAIR` macro for `std::pair<long long int,long long int>`
 
 ### Drawing your CelluarAutomaton object
-You can get `std::string` object that would represent your automaton's map using draw(_rule_) method. Rule is a function that gets `T` and returns `std::string` - string that will be added to the main one
+You can get a `std::string` object that would represent your automaton's map using draw(_rule_) method. Rule is a function that gets `T` and returns `std::string` - string that will be added to the main one
 
 ### Operators overloadings
 **Equating CelluarAutomaton objects**<br>
