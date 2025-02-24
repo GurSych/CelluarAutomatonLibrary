@@ -115,7 +115,7 @@ This _rule-function_ can be send into object's constructor, be changed via chang
 
 > You should change a bit your _rule-function_ - put the new number of neighbours you need.
 
-standard rule-function gets `std::pair<T*,std::array<T*,8>>` argument, your new rule must get `std::pair<T*,std::array<T*,_>>` ( `_` is a place for the new neighbours number).
+Standard rule-function gets `std::pair<T*,std::array<T*,8>>` argument, your new rule must get `std::pair<T*,std::array<T*,_>>` ( `_` is a place for the new neighbours number).
 
 > [!NOTE]
 > You can't save this _rule-function_ in object, you can only use it with step(_rule_) method
@@ -260,8 +260,10 @@ Library features:
 - [ ] Automaton setup using special language
 
 # Versions
-**Current version: 2.0.2**<br>
+**Current version: 2.1.1**<br>
 + 2.x.x
+  + 2.1.x
+    + 2.1.1 - neighbour catching rule feature, endless_map and new constructors
   + 2.0.x
     + 2.0.2 - endless_map option is done
     + 2.0.1 - added multi-layer rules and few static methods
