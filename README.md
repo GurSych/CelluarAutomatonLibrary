@@ -121,7 +121,7 @@ Standard rule-function gets `std::pair<T*,std::array<T*,8>>` argument, your new 
 > You can't save this _rule-function_ in object, you can only use it with step(_rule_) method
 
 You can't use any number of neighbours. To know correect number you should calculate this mathematical expression: $(((layers*2)+1)^2)-1$ or use `rule_arg_arr_size` static method of CelluarAutomaton class<br>
-Layers - how many neighbourhood cubes we check. One layer is standard - that's a 3x3 square with 8 neighbours, two layers - 5x5 square with 24 neighbours, three layers - 7x7 square with 48 neighbours etc...<br>
+Layers - how many neighbourhood squares we check. One layer is standard - that's a 3x3 square with 8 neighbours, two layers - 5x5 square with 24 neighbours, three layers - 7x7 square with 48 neighbours etc...<br>
 Array of neighbours will still have fixed indexing like this:
 
 ```
@@ -142,7 +142,7 @@ T rule_of_three_layers(std::pair<T*,std::array<T*,48>>);
 ```
 
 ### Custom catching neighbour rule
-There's step(_rule_,_rule_) method that allows you send one more rule: rule of catching neighbours. This rule is a `std::array<std::pair<long long int,long long int>,Size>` type argument, each pair is y and x values those are added to dots coordinates to get neighbour coordinates. First _rule-function_ must get the same size of array: `std::pair<T*,std::array<T*,Size>>`<br>
+There's step(_rule_,_rule_) method that allows you send one more rule: rule of catching neighbours. This rule is a `std::array<std::pair<long long int,long long int>,Size>` type argument, there each pair is y-axis and x-axis values those are added to dots coordinates to get neighbour coordinates. First _rule-function_ must get the same size of array: `std::pair<T*,std::array<T*,Size>>`<br>
 Example of indexing neighbour array for 
 
 ```cpp
