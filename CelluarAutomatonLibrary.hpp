@@ -143,15 +143,16 @@ namespace gtd {
             }
             return output;
         }
-        //void operator=(gtd::CelluarAutomaton<T,y_max,x_max>& autom) {
-        //    size_t i{};
-        //    for(CellRaw& arr : autom.map) map[i++] = arr;
-        //    rule_func = autom.rule_func;
-        //}
-        //void operator<<=(gtd::CelluarAutomaton<T,y_max,x_max>& autom) {
-        //    size_t i{};
-        //    for(CellRaw& arr : autom.map) map[i++] = arr;
-        //}
+        void get_map(const gtd::CelluarAutomaton<T,y_max,x_max>& autom) {
+            size_t i{};
+            for(CellRaw& arr : autom.map) map[i++] = arr;
+        }
+        gtd::CelluarAutomaton<T,y_max,x_max>& operator=(const gtd::CelluarAutomaton<T,y_max,x_max>& autom) {
+            size_t i{};
+            for(CellRaw& arr : autom.map) map[i++] = arr;
+            rule_func = autom.rule_func;
+            return *this;
+        }
         bool operator==(gtd::CelluarAutomaton<T,x_max,y_max>& cell) {
             for(size_t y{}; y < y_size; ++y) 
                 for(size_t x{}; x < x_size; ++x) 
