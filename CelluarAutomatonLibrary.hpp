@@ -11,6 +11,8 @@
 #define GTD_CA_RULE_ARG(T) std::pair<T*,std::array<T*,8>>
 #define GTD_CA_NEIGHB_RULE(Size) std::array<std::pair<long long int,long long int>,Size>
 #define GTD_CA_NEIGHB_PAIR std::pair<long long int,long long int>
+#define GTD_CA_MAP(T,Y,X) std::array<std::array<T,X>,Y>
+#define GTD_CA_ROW(T,X) std::array<T,X>
 
 namespace gtd {
     template <class T, size_t y_max, size_t x_max>
@@ -22,16 +24,19 @@ namespace gtd {
             size_t y{}; size_t x{};
             T value{};
         };
-        class CellRaw {
+        class CellRow {
         public:
-            CellRaw() {}
+            CellRow() {}
             T& operator[](size_t indx) {
-                if(indx < 0) throw gtd::excp::OutOfRange("Value is too low for this celluar raw");
-                if(indx >= x_max) throw gtd::excp::OutOfRange("Value is too big for this celluar raw");
-                return raw[indx];
+                if(indx < 0) throw gtd::excp::OutOfRange("Value is too low for this celluar row");
+                if(indx >= x_max) throw gtd::excp::OutOfRange("Value is too big for this celluar row");
+                return row[indx];
+            }
+            void operator=(std::array<T,x_max> _row) {
+                row = _row;
             }
         private:
-            std::array<T,x_max> raw{};
+            std::array<T,x_max> row{};
         };
         CelluarAutomaton() : y_size{y_max}, x_size{x_max} {
             if(x_max < 3) throw gtd::excp::OutOfRange("x-axis value is too low for creating celluar");
@@ -44,7 +49,7 @@ namespace gtd {
         }
         CelluarAutomaton(const gtd::CelluarAutomaton<T,y_max,x_max>& autom) : CelluarAutomaton() {
             size_t i{};
-            for(CellRaw& arr : autom.map) map[i++] = arr;
+            for(CellRow arr : autom.map) map[i++] = arr;
             rule_func =  autom.rule_func;
         }
         CelluarAutomaton(const T(*r_func)(std::pair<T*,std::array<T*,8>>)) : CelluarAutomaton() {
@@ -137,7 +142,7 @@ namespace gtd {
             for(auto h_cell : h_map) map[h_cell.y][h_cell.x] = h_cell.value;
         }
         void step(std::string str) {}
-        CellRaw& operator[](size_t indx) {
+        CellRow& operator[](size_t indx) {
             if(indx < 0) throw gtd::excp::OutOfRange("Value is too low for this celluar");
             if(indx >= y_size) throw gtd::excp::OutOfRange("Value is too big for this celluar");
             return map[indx];
@@ -155,11 +160,15 @@ namespace gtd {
         }
         void get_map(const gtd::CelluarAutomaton<T,y_max,x_max>& autom) {
             size_t i{};
-            for(CellRaw& arr : autom.map) map[i++] = arr;
+            for(CellRow arr : autom.map) map[i++] = arr;
+        }
+        void get_map(std::array<std::array<T,x_max>,y_max>& _map) {
+            size_t i{};
+            for(std::array<T,x_max>& arr : _map) map[i++] = arr;
         }
         gtd::CelluarAutomaton<T,y_max,x_max>& operator=(const gtd::CelluarAutomaton<T,y_max,x_max>& autom) {
             size_t i{};
-            for(CellRaw& arr : autom.map) map[i++] = arr;
+            for(CellRow arr : autom.map) map[i++] = arr;
             rule_func = autom.rule_func;
             return *this;
         }
@@ -198,7 +207,7 @@ namespace gtd {
         }
         ~CelluarAutomaton() {}
     private:
-        std::array<CellRaw,y_max> map{};
+        std::array<CellRow,y_max> map{};
         T(*rule_func)(std::pair<T*,std::array<T*,8>>) = nullptr;
         std::pair<T*,std::array<T*,8>> prepare_dots(size_t y, size_t x) {
             std::array<T*,8> neighbour_cells{};
