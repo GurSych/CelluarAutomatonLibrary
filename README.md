@@ -166,8 +166,15 @@ around `■` cell:
 > [!TIP]
 > You can use `GTD_CA_NEIGHB_RULE(Size)` macro for `std::array<std::pair<long long int,long long int>,Size>` type and `GTD_CA_NEIGHB_PAIR` macro for `std::pair<long long int,long long int>` type
 
-### Drawing your CelluarAutomaton object
+### Drawing your CelluarAutomaton
 You can get a `std::string` object that would represent your automaton's map using draw(_rule_) method. Rule is a function that gets `T` and returns `std::string` - string that will be added to the main one
+This's an example of a simple darw-rule fuinction that gets int from CelluarAutomaton<int,\_,\_> which can have only one-digit numbers and returns it as a string:
+
+```cpp
+std::string draw_rule(int number) {
+    return std::to_string(number);
+}
+```
 
 ### Operators overloadings
 **Equating CelluarAutomaton objects**<br>
