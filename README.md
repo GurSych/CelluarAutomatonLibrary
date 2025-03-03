@@ -259,7 +259,7 @@ int main() {
 `23 line` Calling draw(_rule_) method<br>
 `24 line` Calling step() method<br>
 <br>**What actually happends in our _rule-function_?**<br>
-Our function gets `std::pair<bool*,std::array<bool*,8>>` type argument as `p`<br>
+Our function gets `std::pair<bool*,std::array<bool*,8>>` type argument as `p`. That's a cell and its neighbours.<br>
 Firstly I initialise `neighbours_num` variable that will represent number of live-cells near of the cell. Then I start count these neighbours using this cycle
 
 ```cpp
@@ -274,6 +274,10 @@ if(*p.first && (neighbours_num < 2u || neighbours_num > 3u)) return false; // ki
 else if(!*p.first && neighbours_num == 3u) return true; // ressurect the cell if it's dead and neighbours_num is 3
 return *p.first; // cell saves its state if we doesn't change it upper
 ```
+
+**What actually happends in our draw-function?**<br>
+Our function gets `bool` type argument as `value`. Thas's a cell's value.<br>
+Then it returns to automaton `#` if cell is live and `.` if dead.
 
 </details>
 
