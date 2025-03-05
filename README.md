@@ -1,7 +1,9 @@
 # CelluarAutomatonLibrary
+
 Celluar Automaton Library is my C++ library for easily creating various celluar automatons
 
 # Using Library
+
 > Library is in development so this section is updated together with library itself
 
 ### Library connection
@@ -20,12 +22,13 @@ gtd::CelluarAutomaton<int,4,7> automaton{}; // gtd::CelluarAutomaton<type,rows,c
 ```
 
 | Value   | type   | meaning                     |
-|---------|--------|:----------------------------|
+| ------- | ------ | :-------------------------- |
 | type    | type   | type of each cell's value   |
 | rows    | size_t | number of rows              |
 | columns | size_t | number of cells in each row |
 
 Code upper creates celluar automaton that could be represented like:
+
 ```
 int int int int int int int
 int int int int int int int
@@ -38,8 +41,9 @@ int int int int int int int
 
 <details>
 <summary>All constructors</summary>
-    
+
 Default constructor just initializes cells with default value but there're four more constructors:
+
 + _Rule-function_ constructor gets your [standard](#setup-your-celluarautomaton) _rule-function_ and saves it (cell-initializing with default value). Example:
 
 ```cpp
@@ -74,7 +78,8 @@ gtd::CelluarAutomaton<int,4,7> new_automaton{automaton}; // gtd::CelluarAutomato
 </details>
 
 ### Indexing CelluarAutomaton object
-Map in CelluarAutomaton has two dimantions so you should use double indexing operator<br>
+
+Map in CelluarAutomaton has two dimantions so you should use double indexing operator`<br>`
 Indexing starts from zero value
 
 ```cpp
@@ -83,6 +88,7 @@ automaton[1][2] = 7; // automaton[row][column]
 ```
 
 Code upper creates celluar automaton that could be represented like:
+
 ```
 0 0 0 0
 0 0 7 0
@@ -92,14 +98,16 @@ Code upper creates celluar automaton that could be represented like:
  Size values are saved in `y_size` and `x_size` const fields
 
 ## Setup your CelluarAutomaton
-Setting up rules is the most important part of any celluar automaton. For doing this you should create special _rule-function_ <br>
-Your _rule-function_ for `CelluarAutomaton<T,_,_>` must return `T` type and  one argument: `std::pair<T*,std::array<T*,8>>` type (std::pair with < T-pointer and std::array with < 8 T-pointers > >) <br>
+
+Setting up rules is the most important part of any celluar automaton. For doing this you should create special _rule-function_ `<br>`
+Your _rule-function_ for `CelluarAutomaton<T,_,_>` must return `T` type and  one argument: `std::pair<T*,std::array<T*,8>>` type (std::pair with < T-pointer and std::array with < 8 T-pointers > >) `<br>`
 _Rule-function_ is called for each cell in your automaton, it must analize input data and then **return** new (or the same) value for the cell
 
 > [!CAUTION]
 > **Do not change cell's value via pointer!** You should return value via your _rule-function_
 
 The first element of the pair argument is the pointer to the cell we check, the second one is the array of pointers to this cell's neighbour-cells. Indexing of this array is fixed and the same for every cell:
+
 ```
 0 1 2
 3   4
@@ -107,9 +115,9 @@ The first element of the pair argument is the pointer to the cell we check, the 
 ```
 
 > [!WARNING]
-> Neighbour-cell's pointer is `nullptr` if the cell we check is on the border of automaton's map and such neighbour doesn't exist<br>You should always check that pointer isn't `nullptr`
+> Neighbour-cell's pointer is `nullptr` if the cell we check is on the border of automaton's map and such neighbour doesn't exist`<br>`You should always check that pointer isn't `nullptr`
 
-This _rule-function_ can be send into object's constructor, be changed via change_rule(_rule_) method and be used via simple step() method. You can also use this rule separately with step(_rule_) method. 
+This _rule-function_ can be send into object's constructor, be changed via change_rule(_rule_) method and be used via simple step() method. You can also use this rule separately with step(_rule_) method.
 
 ### What to do if you need to check more neighbours?
 
@@ -120,8 +128,8 @@ Standard rule-function gets `std::pair<T*,std::array<T*,8>>` argument, your new 
 > [!NOTE]
 > You can't save this _rule-function_ in object, you can only use it with step(_rule_) method
 
-You can't use any number of neighbours. To know correect number you should calculate this mathematical expression: $(((layers*2)+1)^2)-1$ or use `rule_arg_arr_size` static method of CelluarAutomaton class<br>
-Layers - how many neighbourhood squares we check. One layer is standard - that's a 3x3 square with 8 neighbours, two layers - 5x5 square with 24 neighbours, three layers - 7x7 square with 48 neighbours etc...<br>
+You can't use any number of neighbours. To know correect number you should calculate this mathematical expression: $(((layers*2)+1)^2)-1$ or use `rule_arg_arr_size` static method of CelluarAutomaton class`<br>`
+Layers - how many neighbourhood squares we check. One layer is standard - that's a 3x3 square with 8 neighbours, two layers - 5x5 square with 24 neighbours, three layers - 7x7 square with 48 neighbours etc...`<br>`
 Array of neighbours will still have fixed indexing like this:
 
 ```
@@ -142,8 +150,9 @@ T rule_of_three_layers(std::pair<T*,std::array<T*,48>>);
 ```
 
 ### Custom catching neighbour rule
-There's step(_rule_,_rule_) method that allows you send one more rule: rule of catching neighbours. This rule is a `std::array<std::pair<long long int,long long int>,Size>` type argument, there each pair is y-axis and x-axis values those are added to dots coordinates to get neighbour coordinates. First _rule-function_ must get the same size of array: `std::pair<T*,std::array<T*,Size>>`<br>
-Example of indexing neighbour array for 
+
+There's step(_rule_,_rule_) method that allows you send one more rule: rule of catching neighbours. This rule is a `std::array<std::pair<long long int,long long int>,Size>` type argument, there each pair is y-axis and x-axis values those are added to dots coordinates to get neighbour coordinates. First _rule-function_ must get the same size of array: `std::pair<T*,std::array<T*,Size>><br>`
+Example of indexing neighbour array for
 
 ```cpp
 T rule(std::pair<T*,std::array<T*,5>>);
@@ -167,6 +176,7 @@ around `■` cell:
 > You can use `GTD_CA_NEIGHB_RULE(Size)` macro for `std::array<std::pair<long long int,long long int>,Size>` type and `GTD_CA_NEIGHB_PAIR` macro for `std::pair<long long int,long long int>` type
 
 ### Drawing your CelluarAutomaton
+
 You can get a `std::string` object that would represent your automaton's map using draw(_rule_) method. Rule is a function that gets `T` and returns `std::string` - string that will be added to the main one
 This's an example of a simple darw-rule fuinction that gets int from CelluarAutomaton<int,\_,\_> which can have only one-digit numbers and returns it as a string:
 
@@ -177,7 +187,8 @@ std::string draw_rule(int number) {
 ```
 
 ### Operators overloadings
-**Equating CelluarAutomaton objects**<br>
+
+**Equating CelluarAutomaton objects**`<br>`
 You can use == and != operators to check equality of two CelluarAutomaton objects
 
 > [!WARNING]
@@ -197,10 +208,11 @@ std::cout << automaton1 == automaton2 << ' ' << automaton1 != automaton2 << std:
 
 </details>
 
-**Assignment operator**<br>
+**Assignment operator**`<br>`
 You can use = operator to get map and rule from another CelluarAutomaton object
 
 # Conway's Game of Life in less than 30 lines of code
+
 Code bellow is a simple example of setting up your automaton using this library. It creates 8x14 bool-type automaton with Game of Life rule. Then it adds there a 'glider' structure and after starts a do-while cycle with calling step() and draw(_rule_) methods.
 
 ```cpp
@@ -220,7 +232,7 @@ std::string draw_rule(bool value) {
 }
 
 int main() {
-    gtd::CelluarAutomaton<bool,8,14> automaton{life_rule};
+    gtd::CelluarAutomaton<bool,8,14> automaton{false,life_rule};
     automaton[1][1] = true;
     automaton[2][3] = true;
     automaton[3][1] = true; automaton[3][2] = true; automaton[3][3] = true;
@@ -228,7 +240,7 @@ int main() {
     do {
         std::cout << automaton.draw(draw_rule) << std::endl;
         automaton.step();
-        std::cin >> input;
+        std::getline(std::cin,input);
     } while(input != "quit");
     return 0;
 }
@@ -245,21 +257,20 @@ int main() {
 .............. .............. .............. .............. .............. ..............
 ```
 
-
 <details>
 <summary>How it works?</summary>
-    
-> Before reading this please check out ['Setup your CelluarAutomaton'](#setup-your-celluarautomaton) section
 
-`1-2 lines` Connecting libraries<br>
-`4-11 lines` Initializing Game of Life _rule-function_ <br>
-`12-14 lines` Initializing drawing rule-function<br>
-`17 line` Initializing CelluarAutomaton object<br>
-`18-20 lines` Adding a 'glider' structure<br>
-`23 line` Calling draw(_rule_) method<br>
-`24 line` Calling step() method<br>
-<br>**What actually happends in our _rule-function_?**<br>
-Our function gets `std::pair<bool*,std::array<bool*,8>>` type argument as `p`<br>
+> Before reading this please check out [&#39;Setup your CelluarAutomaton&#39;](#setup-your-celluarautomaton) section
+
+`1-2 lines` Connecting libraries`<br>`
+`4-11 lines` Initializing Game of Life _rule-function_ `<br>`
+`12-14 lines` Initializing drawing rule-function`<br>`
+`17 line` Initializing CelluarAutomaton object`<br>`
+`18-20 lines` Adding a 'glider' structure`<br>`
+`23 line` Calling draw(_rule_) method`<br>`
+`24 line` Calling step() method`<br>`
+`<br>`**What actually happends in our _rule-function_?**`<br>`
+Our function gets `std::pair<bool*,std::array<bool*,8>>` type argument as `p<br>`
 Firstly I initialise `neighbours_num` variable that will represent number of live-cells near of the cell. Then I start count these neighbours using this cycle
 
 ```cpp
@@ -278,18 +289,23 @@ return *p.first; // cell saves its state if we doesn't change it upper
 </details>
 
 # Plans and ideas
-Library will provide you with a range of celluar automaton classes which you will be able to setup using lambda-function or even using simple template-language<br>
+
+Library will provide you with a range of celluar automaton classes which you will be able to setup using lambda-function or even using simple template-language`<br>`
 Added and finished classes:
-- [x] CelluarAutomaton
+
+- [X] CelluarAutomaton
 - [ ] CelluarAutomaton1D
 - [ ] CelluarAutomaton3D
 
 Library features:
-- [x] Automaton setup using lambda-function
+
+- [X] Automaton setup using lambda-function
 - [ ] Automaton setup using special language
 
 # Versions
-**Current version: 2.1.1**<br>
+
+**Current version: 2.1.1**`<br>`
+
 + 2.x.x
   + 2.1.x
     + 2.1.1 - neighbour catching rule feature and new constructors
