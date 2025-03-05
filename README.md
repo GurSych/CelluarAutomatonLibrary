@@ -13,7 +13,7 @@ Celluar Automaton Library is my C++ library for easily creating various celluar 
 ```
 
 > [!NOTE]
-> All library classes are in gtd:: namespace
+> All library classes are in `gtd::` namespace
 
 ### Creating simple CelluarAutomaton object
 
