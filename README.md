@@ -79,7 +79,7 @@ gtd::CelluarAutomaton<int,4,7> new_automaton{automaton}; // gtd::CelluarAutomato
 
 ### Indexing CelluarAutomaton object
 
-Map in CelluarAutomaton has two dimantions so you should use double indexing operator`<br>`
+Map in CelluarAutomaton has two dimantions so you should use double indexing operator `<br>`
 Indexing starts from zero value
 
 ```cpp
@@ -115,7 +115,7 @@ The first element of the pair argument is the pointer to the cell we check, the 
 ```
 
 > [!WARNING]
-> Neighbour-cell's pointer is `nullptr` if the cell we check is on the border of automaton's map and such neighbour doesn't exist`<br>`You should always check that pointer isn't `nullptr`
+> Neighbour-cell's pointer is `nullptr` if the cell we check is on the border of automaton's map and such neighbour doesn't exist `<br>`You should always check that pointer isn't `nullptr`
 
 This _rule-function_ can be send into object's constructor, be changed via change_rule(_rule_) method and be used via simple step() method. You can also use this rule separately with step(_rule_) method.
 
@@ -128,7 +128,7 @@ Standard rule-function gets `std::pair<T*,std::array<T*,8>>` argument, your new 
 > [!NOTE]
 > You can't save this _rule-function_ in object, you can only use it with step(_rule_) method
 
-You can't use any number of neighbours. To know correect number you should calculate this mathematical expression: $(((layers*2)+1)^2)-1$ or use `rule_arg_arr_size` static method of CelluarAutomaton class`<br>`
+You can't use any number of neighbours. To know correect number you should calculate this mathematical expression: $(((layers*2)+1)^2)-1$ or use `rule_arg_arr_size` static method of CelluarAutomaton class `<br>`
 Layers - how many neighbourhood squares we check. One layer is standard - that's a 3x3 square with 8 neighbours, two layers - 5x5 square with 24 neighbours, three layers - 7x7 square with 48 neighbours etc...`<br>`
 Array of neighbours will still have fixed indexing like this:
 
@@ -188,7 +188,7 @@ std::string draw_rule(int number) {
 
 ### Operators overloadings
 
-**Equating CelluarAutomaton objects**`<br>`
+**Equating CelluarAutomaton objects** `<br>`
 You can use == and != operators to check equality of two CelluarAutomaton objects
 
 > [!WARNING]
@@ -208,7 +208,7 @@ std::cout << automaton1 == automaton2 << ' ' << automaton1 != automaton2 << std:
 
 </details>
 
-**Assignment operator**`<br>`
+**Assignment operator** `<br>`
 You can use = operator to get map and rule from another CelluarAutomaton object
 
 # Conway's Game of Life in less than 30 lines of code
@@ -260,7 +260,6 @@ int main() {
 <details>
 <summary>How it works?</summary>
 
-<<<<<<< HEAD
 > Before reading this please check out [&#39;Setup your CelluarAutomaton&#39;](#setup-your-celluarautomaton) section
 
 `1-2 lines` Connecting libraries`<br>`
@@ -271,18 +270,8 @@ int main() {
 `23 line` Calling draw(_rule_) method`<br>`
 `24 line` Calling step() method`<br>`
 `<br>`**What actually happends in our _rule-function_?**`<br>`
-Our function gets `std::pair<bool*,std::array<bool*,8>>` type argument as `p<br>`
-=======
-`1-2 lines` Connecting libraries<br>
-`4-11 lines` Initializing Game of Life _rule-function_ <br>
-`12-14 lines` Initializing drawing rule-function<br>
-`17 line` Initializing CelluarAutomaton object<br>
-`18-20 lines` Adding a 'glider' structure<br>
-`23 line` Calling draw(_rule_) method<br>
-`24 line` Calling step() method<br>
-<br>**What actually happends in our _rule-function_?**<br>
-Our function gets `std::pair<bool*,std::array<bool*,8>>` type argument as `p`. That's a cell and its neighbours.<br>
->>>>>>> 84333b1d10610ca6e4d1e2617537b2ad75ee0d11
+Our function gets `std::pair<bool*,std::array<bool*,8>>` type argument as `p`. That's a cell and its neighbours.`<br>`
+
 Firstly I initialise `neighbours_num` variable that will represent number of live-cells near of the cell. Then I start count these neighbours using this cycle
 
 ```cpp
@@ -298,15 +287,15 @@ else if(!*p.first && neighbours_num == 3u) return true; // ressurect the cell if
 return *p.first; // cell saves its state if we doesn't change it upper
 ```
 
-**What actually happends in our draw-function?**<br>
-Our function gets `bool` type argument as `value`. Thas's a cell's value.<br>
+**What actually happends in our draw-function?**`<br>`
+Our function gets `bool` type argument as `value`. Thas's a cell's value.`<br>`
 Then it returns to automaton `#` if cell is live and `.` if dead.
 
 </details>
 
 # Plans and ideas
 
-Library will provide you with a range of celluar automaton classes which you will be able to setup using lambda-function or even using simple template-language`<br>`
+Library will provide you with a range of celluar automaton classes which you will be able to setup using lambda-function or even using simple template-language `<br>`
 Added and finished classes:
 
 - [X] CelluarAutomaton
@@ -320,7 +309,7 @@ Library features:
 
 # Versions
 
-**Current version: 2.1.1**`<br>`
+**Current version: 2.1.1** `<br>`
 
 + 2.x.x
   + 2.1.x
