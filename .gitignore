@@ -3,3 +3,6 @@
 
 ### VS Code ###
 .vscode/
+
+### Test .cpp ###
+*.cpp

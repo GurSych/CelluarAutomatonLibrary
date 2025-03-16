@@ -1,9 +1,9 @@
 #include <iostream>
 #include "CelluarAutomatonLibrary.hpp"
 
-bool life_rule(std::pair<bool*,std::array<bool*,8>> p) {
+bool life_rule(std::pair<const bool*,std::array<const bool*,8>> p) {
     unsigned int neighbours_num{};
-    for(bool* n_cell : p.second)
+    for(const bool* n_cell : p.second)
         if(n_cell != nullptr) neighbours_num += (*n_cell ? 1u : 0u);
     if(*p.first && (neighbours_num < 2u || neighbours_num > 3u)) return false;
     else if(!*p.first && neighbours_num == 3u) return true;

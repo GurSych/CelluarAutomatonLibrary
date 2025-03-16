@@ -1,6 +1,7 @@
 #pragma once
 #include "CAL_Exceptions.hpp"
 #include <stdexcept>
+#include <utility>
 #include <vector>
 #include <string>
 #include <array>
@@ -8,7 +9,7 @@
 #include <map>
 #include <set>
 
-#define GTD_CA_RULE_ARG(T) std::pair<T*,std::array<T*,8>>
+#define GTD_CA_RULE_ARG(T) std::pair<const T*,std::array<const T*,8>>
 #define GTD_CA_NEIGHB_RULE(Size) std::array<std::pair<long long int,long long int>,Size>
 #define GTD_CA_NEIGHB_PAIR std::pair<long long int,long long int>
 #define GTD_CA_MAP(T,Y,X) std::array<std::array<T,X>,Y>
@@ -42,7 +43,7 @@ namespace gtd {
             if(x_max < 3) throw gtd::excp::OutOfRange("x-axis value is too low for creating celluar");
             if(y_max < 3) throw gtd::excp::OutOfRange("y-axis value is too low for creating celluar");
         }
-        CelluarAutomaton(T(*r_func)(std::pair<T*,std::array<T*,8>>)) : CelluarAutomaton() {
+        CelluarAutomaton(T(*r_func)(std::pair<const T*,std::array<const T*,8>>)) : CelluarAutomaton() {
             rule_func =  r_func;
         }
         CelluarAutomaton(T tmpl) : CelluarAutomaton() {
@@ -53,7 +54,7 @@ namespace gtd {
             for(CellRow arr : autom.map) map[i++] = arr;
             rule_func =  autom.rule_func;
         }
-        CelluarAutomaton(T tmpl, T(*r_func)(std::pair<T*,std::array<T*,8>>)) : CelluarAutomaton(tmpl) {
+        CelluarAutomaton(T tmpl, T(*r_func)(std::pair<const T*,std::array<const T*,8>>)) : CelluarAutomaton(tmpl) {
             rule_func =  r_func;
         }
         void step() {
@@ -76,7 +77,7 @@ namespace gtd {
             }
             for(auto h_cell : h_map) map[h_cell.y][h_cell.x] = h_cell.value;
         }
-        void step(T(*r_func)(std::pair<T*,std::array<T*,8>>)) {
+        void step(T(*r_func)(std::pair<const T*,std::array<const T*,8>>)) {
             std::vector<HCell> h_map{};
             for(size_t y{}; y < y_size; ++y) {
                 for(size_t x{}; x < x_size; ++x) {
@@ -96,7 +97,7 @@ namespace gtd {
             for(auto h_cell : h_map) map[h_cell.y][h_cell.x] = h_cell.value;
         }
         template <size_t Arr_Size>
-        void step(T(*r_func)(std::pair<T*,std::array<T*,Arr_Size>>)) {
+        void step(T(*r_func)(std::pair<const T*,std::array<const T*,Arr_Size>>)) {
             long long int layers = (long long int)rule_arg_arr_layers(Arr_Size);
             if(layers == 0ull) throw gtd::excp::InvalidRule("Invalid neighbours number");
             std::vector<HCell> h_map{};
@@ -118,7 +119,7 @@ namespace gtd {
             for(auto h_cell : h_map) map[h_cell.y][h_cell.x] = h_cell.value;
         }
         template <size_t Arr_Size>
-        void step(T(*r_func)(std::pair<T*,std::array<T*,Arr_Size>>), const GTD_CA_NEIGHB_RULE(Arr_Size)& neighb_rule) {
+        void step(T(*r_func)(std::pair<const T*,std::array<const T*,Arr_Size>>), const GTD_CA_NEIGHB_RULE(Arr_Size)& neighb_rule) {
             if(Arr_Size == 0ull) throw gtd::excp::InvalidRule("Too low number of neighbours");
             std::vector<HCell> h_map{};
             for(size_t y{}; y < y_size; ++y) {
@@ -181,7 +182,7 @@ namespace gtd {
                     if(map[y][x] != cell.map[y][x]) return true;
             return false;
         }
-        void change_rule(T(*ptr)(std::pair<T*,std::array<T*,8>>)) {
+        void change_rule(T(*ptr)(std::pair<const T*,std::array<const T*,8>>)) {
             rule_func = ptr;
         }
         bool endless_map = false;
@@ -205,19 +206,21 @@ namespace gtd {
         ~CelluarAutomaton() {}
     private:
         std::array<CellRow,y_max> map{};
-        T(*rule_func)(std::pair<T*,std::array<T*,8>>) = nullptr;
-        std::pair<T*,std::array<T*,8>> prepare_dots(size_t y, size_t x) {
-            std::array<T*,8> neighbour_cells{};
+        T(*rule_func)(std::pair<const T*,std::array<const T*,8>>) = nullptr;
+        std::pair<const T*,std::array<const T*,8>> prepare_dots(size_t y, size_t x) {
+            std::array<const T*,8> neighbour_cells{};
             unsigned short int i{};
-            for(long long int ly = -1ll+(long long int)y; ly <= 1ll+(long long int)y; ++ly) {
-                for(long long int lx = -1ll+(long long int)x; lx <= 1ll+(long long int)x; ++lx) {
+            for(long long int ly = -1ll+static_cast<long long int>(y); ly <= 1ll+static_cast<long long int>(y); ++ly) {
+                for(long long int lx = -1ll+static_cast<long long int>(x); lx <= 1ll+static_cast<long long int>(x); ++lx) {
                     if(ly == y && lx == x) continue;
                     if(endless_map) {
                         size_t n_ly{}; size_t n_lx{};
-                        if(ly < 0ll) n_ly = y_size-1ll;
-                        else if(ly == y_size) n_ly = 0ll;
-                        if(lx < 0ll) n_lx = x_size-1ll;
-                        else if(lx == x_size) n_lx = 0ll;
+                        if(ly < 0ll) n_ly = y_size-1ull;
+                        else if(ly >= y_size) n_ly = 0ull;
+                        else n_ly = ly;
+                        if(lx < 0ll) n_lx = x_size-1ull;
+                        else if(lx >= x_size) n_lx = 0ull;
+                        else n_lx = lx;
                         neighbour_cells[i++] = &(map[n_ly][n_lx]);
                     } else {
                         if(ly >= 0 && ly < y_size && lx >= 0 && lx < x_size) neighbour_cells[i++] = &(map[ly][lx]);
@@ -225,14 +228,14 @@ namespace gtd {
                     }
                 }
             }
-            return std::make_pair(&(map[y][x]),neighbour_cells);
+            return std::make_pair<const T*,std::array<const T*,8>>(&(map[y][x]),std::move(neighbour_cells));
         }
         template <size_t ArrSize>
-        std::pair<T*,std::array<T*,ArrSize>> prepare_dots(size_t y, size_t x, long long int layers) {
-            std::array<T*,ArrSize> neighbour_cells{};
+        std::pair<const T*,std::array<const T*,ArrSize>> prepare_dots(size_t y, size_t x, long long int layers) {
+            std::array<const T*,ArrSize> neighbour_cells{};
             unsigned long long int i{};
-            for(long long int ly = -layers+(long long int)y; ly <= layers+(long long int)y; ++ly) {
-                for(long long int lx = -layers+(long long int)x; lx <= layers+(long long int)x; ++lx) {
+            for(long long int ly = -layers+static_cast<long long int>(y); ly <= layers+static_cast<long long int>(y); ++ly) {
+                for(long long int lx = -layers+static_cast<long long int>(x); lx <= layers+static_cast<long long int>(x); ++lx) {
                     if(ly == y && lx == x) continue;
                     if(endless_map) {
                         size_t n_ly{}; size_t n_lx{};
@@ -247,15 +250,15 @@ namespace gtd {
                     }
                 }
             }
-            return std::make_pair(&(map[y][x]),neighbour_cells);
+            return std::make_pair<const T*,std::array<const T*,ArrSize>>(&(map[y][x]),std::move(neighbour_cells));
         }
         template <size_t ArrSize>
-        std::pair<T*,std::array<T*,ArrSize>> prepare_dots(const size_t y, const size_t x, const GTD_CA_NEIGHB_RULE(ArrSize)& neighb_rule) {
-            std::array<T*,ArrSize> neighbour_cells{};
+        std::pair<const T*,std::array<const T*,ArrSize>> prepare_dots(const size_t y, const size_t x, const GTD_CA_NEIGHB_RULE(ArrSize)& neighb_rule) {
+            std::array<const T*,ArrSize> neighbour_cells{};
             unsigned long long int i{};
             for(std::pair<long long int,long long int> p : neighb_rule) {
-                long long int ly = p.first+(long long int)y;
-                long long int lx = p.second+(long long int)y;
+                long long int ly = p.first+static_cast<long long int>(y);
+                long long int lx = p.second+static_cast<long long int>(y);
                 if(ly == y && lx == x) throw gtd::excp::InvalidRule("Cell itself is in array of neighbours");
                 if(endless_map) {
                     size_t n_ly{}; size_t n_lx{};
@@ -270,7 +273,7 @@ namespace gtd {
                     else neighbour_cells[i++] = nullptr;
                 }
             }
-            return std::make_pair(&(map[y][x]),neighbour_cells);
+            return std::make_pair<const T*,std::array<const T*,ArrSize>>(&(map[y][x]),std::move(neighbour_cells));
         }
         static inline std::map<size_t,size_t> available_arg_sizes_to_layers{};
     };
