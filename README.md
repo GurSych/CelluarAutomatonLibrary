@@ -47,7 +47,7 @@ Default constructor just initializes cells with default value but there're four 
 + _Rule-function_ constructor gets your [standard](#setup-your-celluarautomaton) _rule-function_ and saves it (cell-initializing with default value). Example:
 
 ```cpp
-int rule(std::pair<T*,std::array<T*,8>>);
+int rule(std::pair<const T*,std::array<const T*,8>>);
 gtd::CelluarAutomaton<int,4,7> automaton{rule}; // gtd::CelluarAutomaton<type,rows,columns>(rule-function)
 ```
 
@@ -62,7 +62,7 @@ gtd::CelluarAutomaton<int,4,7> automaton{value}; // gtd::CelluarAutomaton<type,r
 
 ```cpp
 int value = 17;
-int rule(std::pair<T*,std::array<T*,8>>);
+int rule(std::pair<const T*,std::array<const T*,8>>);
 gtd::CelluarAutomaton<int,4,7> automaton{value,rule}; // gtd::CelluarAutomaton<type,rows,columns>(standard value, rule-function)
 ```
 
@@ -100,11 +100,11 @@ Code upper creates celluar automaton that could be represented like:
 ## Setup your CelluarAutomaton
 
 Setting up rules is the most important part of any celluar automaton. For doing this you should create special _rule-function_ <br>
-Your _rule-function_ for `CelluarAutomaton<T,_,_>` must return `T` type and  one argument: `std::pair<T*,std::array<T*,8>>` type (std::pair with < T-pointer and std::array with < 8 T-pointers > >) <br>
+Your _rule-function_ for `CelluarAutomaton<T,_,_>` must return `T` type and  one argument: `std::pair<const T*,std::array<const T*,8>>` type (std::pair with < const T-pointer and std::array with < 8 const T-pointers > >) <br>
 _Rule-function_ is called for each cell in your automaton, it must analize input data and then **return** new (or the same) value for the cell
 
-> [!CAUTION]
-> **Do not change cell's value via pointer!** You should return value via your _rule-function_
+<!-- > [!CAUTION]
+> **Do not change cell's value via pointer!** You should return value via your _rule-function_ -->
 
 The first element of the pair argument is the pointer to the cell we check, the second one is the array of pointers to this cell's neighbour-cells. Indexing of this array is fixed and the same for every cell:
 
@@ -123,7 +123,7 @@ This _rule-function_ can be send into object's constructor, be changed via chang
 
 > You should change a bit your _rule-function_ - put the new number of neighbours you need.
 
-Standard rule-function gets `std::pair<T*,std::array<T*,8>>` argument, your new rule must get `std::pair<T*,std::array<T*,_>>` ( `_` is a place for the new neighbours number).
+Standard rule-function gets `std::pair<const T*,std::array<const T*,8>>` argument, your new rule must get `std::pair<const T*,std::array<const T*,_>>` ( `_` is a place for the new neighbours number).
 
 > [!NOTE]
 > You can't save this _rule-function_ in object, you can only use it with step(_rule_) method
@@ -145,17 +145,17 @@ Array of neighbours will still have fixed indexing like this:
 there're also examples of such rules' function-signatures:
 
 ```cpp
-T rule_of_two_layers(std::pair<T*,std::array<T*,24>>);
-T rule_of_three_layers(std::pair<T*,std::array<T*,48>>);
+T rule_of_two_layers(std::pair<const T*,std::array<const T*,24>>);
+T rule_of_three_layers(std::pair<const T*,std::array<const T*,48>>);
 ```
 
 ### Custom catching neighbour rule
 
-There's step(_rule_,_rule_) method that allows you send one more rule: rule of catching neighbours. This rule is a `std::array<std::pair<long long int,long long int>,Size>` type argument, there each pair is y-axis and x-axis values those are added to dots coordinates to get neighbour coordinates. First _rule-function_ must get the same size of array: `std::pair<T*,std::array<T*,Size>><br>`
+There's step(_rule_,_rule_) method that allows you send one more rule: rule of catching neighbours. This rule is a `std::array<std::pair<long long int,long long int>,Size>` type argument, there each pair is y-axis and x-axis values those are added to dots coordinates to get neighbour coordinates. First _rule-function_ must get the same size of array: `std::pair<const T*,std::array<const T*,Size>><br>`
 Example of indexing neighbour array for
 
 ```cpp
-T rule(std::pair<T*,std::array<T*,5>>);
+T rule(std::pair<const T*,std::array<const T*,5>>);
 std::array<std::pair<long long int,long long int>,5> neighbor_rule{
     std::pair<long long int,long long int>{-1,1},{2,-2},{1,1},{0,-1},{-2,-1}
 };
@@ -219,9 +219,9 @@ Code bellow is a simple example of setting up your automaton using this library.
 #include <iostream>
 #include "CelluarAutomatonLibrary.hpp"
 
-bool life_rule(std::pair<bool*,std::array<bool*,8>> p) {
+bool life_rule(std::pair<const bool*,std::array<const bool*,8>> p) {
     unsigned int neighbours_num{};
-    for(bool* n_cell : p.second)
+    for(const bool* n_cell : p.second)
         if(n_cell != nullptr) neighbours_num += (*n_cell ? 1u : 0u);
     if(*p.first && (neighbours_num < 2u || neighbours_num > 3u)) return false;
     else if(!*p.first && neighbours_num == 3u) return true;
@@ -270,12 +270,12 @@ int main() {
 `23 line` Calling draw(_rule_) method<br>
 `24 line` Calling step() method<br>
 <br>**What actually happends in our _rule-function_?**<br>
-Our function gets `std::pair<bool*,std::array<bool*,8>>` type argument as `p`. That's a cell and its neighbours.<br>
+Our function gets `std::pair<const bool*,std::array<const bool*,8>>` type argument as `p`. That's a cell and its neighbours.<br>
 
 Firstly I initialise `neighbours_num` variable that will represent number of live-cells near of the cell. Then I start count these neighbours using this cycle
 
 ```cpp
-for(bool* n_cell : p.second) // check each neighbour-cell
+for(const bool* n_cell : p.second) // check each neighbour-cell
     if(n_cell != nullptr) neighbours_num += (*n_cell ? 1u : 0u); // check that pointer isn't nullptr and then add one if the cell is live
 ```
 
